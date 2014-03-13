@@ -1,0 +1,1008 @@
+<html>
+<head>
+    <meta content="text/html; charset=ISO-8859-1" http-equiv="Content-Type">
+    <title>Part I. Pcapy Reference</title>
+    <meta name="generator" content="DocBook XSL Stylesheets V1.40">
+    <meta name="keywords" content="pcap, packet, capture, python">
+</head>
+<body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF">
+    <div class="part" id="id2720626">
+        <div class="titlepage">
+            <div>
+                <h1 class="title"><a name="id2720626"></a>Pcapy Reference</h1>
+            </div>
+            <div>
+                <h3 class="corpauthor">CORE SECURITY TECHNOLOGIES</h3>
+            </div>
+            <div>
+                <p class="copyright">Copyright © 2014 CORE SECURITY TECHNOLOGIES</p>
+            </div>
+            <div>
+                <div class="revhistory">
+                    <table border="1" width="100%" summary="Revision history">
+                        <tr>
+                            <th align="left" valign="top" colspan="3"><b>Revision History</b></th>
+                        </tr>
+                        <tr>
+                            <td align="left">Revision: 1.2</td>
+                            <td align="left">Date: 2003/10/23</td>
+                            <td align="left">Author: jkohen</td>
+                        </tr>
+                        <tr>
+                            <td align="left" colspan="3">Initial revision</td>
+                        </tr>
+                    </table>
+                </div>
+            </div>
+        </div>
+        <div class="toc">
+            <p><b>Table of Contents</b></p>
+            <dl>
+                <dt>I <a href="#id2720790">Pcapy Module Reference</a></dt>
+                <dd>
+                    <dl>
+                        <dt><a href="#id2720796">open_live</a></dt>
+                        <dt><a href="#id2720974">open_offline</a></dt>
+                        <dt><a href="#id2721096">lookupdev</a></dt>
+                        <dt><a href="#id2716618">findalldevs</a></dt>
+                        <dt><a href="#id2766688">compile</a></dt>
+                    </dl>
+                </dd>
+                <dt>II <a href="#id2720711">Reader Object Reference</a></dt>
+                <dd>
+                    <dl>
+                        <dt><a href="#id2720717">dispatch</a></dt>
+                        <dt><a href="#id2723103">next</a></dt>
+                        <dt><a href="#id2723279">setfilter</a></dt>
+                        <dt><a href="#id2723348">getnet</a></dt>
+                        <dt><a href="#id2723448">datalink</a></dt>
+                        <dt><a href="#id2718490">getnonblock</a></dt>
+                        <dt><a href="#id2718128">dump_open</a></dt>
+                    </dl>
+                </dd>
+                <dt>III <a href="#id2718727">Dumper Object Reference</a></dt>
+                <dd>
+                    <dl>
+                        <dt><a href="#id2718732">dump</a></dt>
+                    </dl>
+                </dd>
+                <dt>IV <a href="#id2718829">Pkthdr Object Reference</a></dt>
+                <dd>
+                    <dl>
+                        <dt><a href="#id2718835">getts</a></dt>
+                    </dl>
+                </dd>
+                <dt>V <a href="#id2781073">Bpf Object Reference</a></dt>
+                <dd>
+                    <dl>
+                        <dt><a href="#id2781080">filter</a></dt>
+                    </dl>
+                </dd>
+                <dt><a href="#id2781178">Bibliography</a></dt>
+            </dl>
+        </div>
+        <div class="reference">
+            <div class="titlepage">
+                <div>
+                    <h1 class="title"><a name="id2720790"></a>Pcapy Module Reference</h1>
+                </div>
+                <hr>
+            </div>
+            <div class="toc">
+                <p><b>Table of Contents</b></p>
+                <dl>
+                    <dt><a href="#id2720796">open_live</a></dt>
+                    <dt><a href="#id2720974">open_offline</a></dt>
+                    <dt><a href="#id2721096">lookupdev</a></dt>
+                    <dt><a href="#id2716618">findalldevs</a></dt>
+                    <dt><a href="#id2766688">compile</a></dt>
+                </dl>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2720796"></a>open_live</h1>
+                <div class="refnamediv"><a name="id2720799"></a>
+                    <h2>Name</h2>
+                    open_live &#8212; Obtain a packet capture descriptor to look at packets on the network</div>
+                <div class="refsynopsisdiv"><a name="id2720813"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2720817"><a name="id2720817"></a>
+                        <p><code><code class="funcdef">Reader <b class="fsfunc">open_live</b></code>(<var class="pdparam">device</var>,
+                            <var class="pdparam">snaplen</var>,
+                            <var class="pdparam">promisc</var>,
+                            <var class="pdparam">to_ms</var>);<br>
+                            string
+                            <var class="pdparam">device</var>;<br>
+                            int
+                            <var class="pdparam">snaplen</var>;<br>
+                            int
+                            <var class="pdparam">promisc</var>;<br>
+                            int
+                            <var class="pdparam">to_ms</var>;</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2720875"></a>
+                    <h2><a name="id2720875"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>open_live</tt>is used to obtain a packet
+	  capture descriptor to look at packets on the network.
+	  <i><tt>device</tt></i>is a string that specifies the
+	  network device to open; on Linux systems with 2.2 or later
+	  kernels, a device argument of <tt>any</tt>or
+	  <tt>NULL</tt>can be used to capture packets
+	  from all interfaces. <i><tt>snaplen</tt></i>
+                        specifies the maximum number of bytes to capture.
+	  <i><tt>promisc</tt></i>specifies if the interface is
+	  to be put into promiscuous mode. (Note that even if this
+	  parameter is false, the interface could well be in
+	  promiscuous mode for some other reason.) For now, this
+	  doesn't work on the <tt>any</tt>device; if an
+	  argument of <tt>any</tt>or
+	  <tt>NULL</tt>is supplied, the
+	  <i><tt>promisc</tt></i>flag is ignored.
+	  <i><tt>to_ms</tt></i>specifies the read timeout in
+	  milliseconds. The read timeout is used to arrange that the
+	  read not necessarily return immediately when a packet is
+	  seen, but that it wait for some amount of time to allow more
+	  packets to arrive and to read multiple packets from the OS
+	  kernel in one operation. Not all platforms support a read
+	  timeout; on platforms that don't, the read timeout is
+	  ignored.
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2720974"></a>open_offline</h1>
+                <div class="refnamediv"><a name="id2720977"></a>
+                    <h2>Name</h2>
+                    open_offline &#8212; Obtain a packet capture descriptor to look at packets on a <i>savefile</i></div>
+                <div class="refsynopsisdiv"><a name="id2720994"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2720997"><a name="id2720997"></a>
+                        <p><code><code class="funcdef">Reader <b class="fsfunc">open_offline</b></code>(<var class="pdparam">filename</var>);<br>
+                            string
+                            <var class="pdparam">filename</var>;</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2721028"></a>
+                    <h2><a name="id2721028"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>open_offline</tt>is called to open a
+	  <i>savefile</i> for reading. <i><tt>filename</tt></i>
+                        specifies the name of the file to open. The file has the
+	  same format as those used by
+	  tcpdump(8) and
+	  tcpslice(8). The name
+	  <tt>-</tt>is a synonym for
+	  <tt>stdin</tt>.
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2721096"></a>lookupdev</h1>
+                <div class="refnamediv">
+                    <a name="id2721099"></a>
+                    <h2>Name</h2>
+                    lookupdev &#8212; Return a network device suitable for use with
+	  <tt>open_live</tt>
+                </div>
+                <div class="refsynopsisdiv"><a name="id2721118"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2721121"><a name="id2721121"></a>
+                        <p><code><code class="funcdef">string <b class="fsfunc">lookupdev</b></code>();</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2721144"></a>
+                    <h2><a name="id2721144"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>lookupdev</tt>returns the name of a network
+	  device suitable for use with <tt>open_live</tt>.
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2716618"></a>findalldevs</h1>
+                <div class="refnamediv"><a name="id2766659"></a>
+                    <h2>Name</h2>
+                    findalldevs &#8212; Obtain the list of available network devices</div>
+                <div class="refsynopsisdiv"><a name="id2780797"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2780800"><a name="id2780800"></a>
+                        <p><code><code class="funcdef">string[] <b class="fsfunc">findalldevs</b></code>();</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2766782"></a>
+                    <h2><a name="id2766782"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>findalldevs</tt>constructs a list of
+	  network devices that can be opened with
+	  <tt>open_live</tt>. (Note that there may be
+	  network devices that cannot be opened with
+	  <tt>open_live</tt>, because, for example, that
+	  process might not have sufficient privileges to open them
+	  for capturing; if so, those devices will not appear on the
+	  list.)
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2766688"></a>compile</h1>
+                <div class="refnamediv"><a name="id2766691"></a>
+                    <h2>Name</h2>
+                    compile &#8212; Compile a BPF filter</div>
+                <div class="refsynopsisdiv"><a name="id2766704"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2766707"><a name="id2766707"></a>
+                        <p><code><code class="funcdef">Bpf <b class="fsfunc">compile</b></code>(<var class="pdparam">linktype</var>,
+                            <var class="pdparam">snaplen</var>,
+                            <var class="pdparam">filter</var>,
+                            <var class="pdparam">optimize</var>,
+                            <var class="pdparam">netmask</var>);<br>
+                            int
+                            <var class="pdparam">linktype</var>;<br>
+                            int
+                            <var class="pdparam">snaplen</var>;<br>
+                            string
+                            <var class="pdparam">filter</var>;<br>
+                            int
+                            <var class="pdparam">optimize</var>;<br>
+                            int32
+                            <var class="pdparam">netmask</var>;</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2720660"></a>
+                    <h2><a name="id2720660"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>compile</tt>is used to compile the
+	  <i><tt>filter</tt></i>into a filter program.
+	  <tt>snaplen</tt>specifies the maximum number of
+	  bytes to capture. <i><tt>optimize</tt></i>controls
+	  whether optimization on the resulting code is performed.
+	  <i><tt>netmask</tt></i>specifies the netmask of the
+	  local network.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="reference">
+            <div class="titlepage">
+                <div>
+                    <h1 class="title"><a name="id2720711"></a>Reader Object Reference</h1>
+                </div>
+                <hr>
+            </div>
+            <div class="toc">
+                <p><b>Table of Contents</b></p>
+                <dl>
+                    <dt><a href="#id2720717">dispatch</a></dt>
+                    <dt><a href="#id2723103">next</a></dt>
+                    <dt><a href="#id2723279">setfilter</a></dt>
+                    <dt><a href="#id2723348">getnet</a></dt>
+                    <dt><a href="#id2723448">datalink</a></dt>
+                    <dt><a href="#id2718490">getnonblock</a></dt>
+                    <dt><a href="#id2718128">dump_open</a></dt>
+                </dl>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2720717"></a>dispatch</h1>
+                <div class="refnamediv"><a name="id2720720"></a>
+                    <h2>Name</h2>
+                    dispatch, loop &#8212; Collect and process packets</div>
+                <div class="refsynopsisdiv">
+                    <a name="id2718931"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2718935">
+                        <a name="id2718935"></a>
+                        <p>
+                            <code><code class="funcdef">int <b class="fsfunc">dispatch</b></code>(<var class="pdparam">maxcant</var>,
+                                <var class="pdparam">(* callback)</var>);<br>
+                                int
+                                <var class="pdparam">maxcant</var>;<br>
+                                void
+                                <var class="pdparam">(* callback)</var>
+                                (Pkthdr, string);</code>
+                        </p>
+                        <p>
+                            <code><code class="funcdef">int <b class="fsfunc">loop</b></code>(<var class="pdparam">maxcant</var>,
+                                <var class="pdparam">(* callback)</var>);<br>
+                                int
+                                <var class="pdparam">maxcant</var>;<br>
+                                void
+                                <var class="pdparam">(* callback)</var>
+                                (Pkthdr, string);</code>
+                        </p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2719017"></a>
+                    <h2><a name="id2719017"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>dispatch</tt>is used to collect and process
+	  packets. <i><tt>maxcant</tt></i>specifies the
+	  maximum number of packets to process before returning. This
+	  is not a minimum number; when reading a live capture, only
+	  one bufferful of packets is read at a time, so fewer than
+	  <i><tt>maxcant</tt></i>packets may be processed. A
+	  <i><tt>cnt</tt></i>of <tt>-1</tt>
+                        processes all the packets received in one buffer when
+	  reading a live capture, or all the packets in the file when
+	  reading a <i>savefile</i>. <i><tt>callback</tt></i>
+                        specifies a routine to be called with two arguments: a
+	  <tt>Pkthdr</tt>instance describing the data
+	  passed and the data itself.
+                    </p>
+                    <p>
+                        The number of packets read is returned.
+	  0 is returned if no packets were
+	  read from a live capture (if, for example, they were
+	  discarded because they didn't pass the packet filter, or if,
+	  on platforms that support a read timeout that starts before
+	  any packets arrive, the timeout expires before any  packets
+	  arrive, or if the file descriptor for the capture device is
+	  in non&#8211;blocking mode and no packets were available to be
+	  read) or if no more packets are available in a <i>savefile</i>.
+                    </p>
+                    <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+                        <h3 class="title"><a name="id2723188"></a>Note</h3>
+                        <p>
+                            When reading a live capture, <tt>dispatch</tt>
+                            will not necessarily return when the read times out; on
+	    some platforms, the read timeout isn't supported, and, on
+	    other platforms, the timer doesn't start until at least
+	    one packet arrives. This means that the read timeout
+	    should <i>not</i> be used in, for example,
+	    an interactive application, to allow the packet capture
+	    loop to poll for user input periodically, as there's no
+	    guarantee that <tt>dispatch</tt>will return
+	    after the timeout expires.
+                        </p>
+                    </div>
+                    <p>
+                        <tt>loop</tt>is similar to
+	  <tt>dispatch</tt>except it keeps reading
+	  packets until <i><tt>maxcant</tt></i>packets are
+	  processed or an error occurs. It does
+	  <i>not</i> return when live read timeouts
+	  occur. Rather, specifying a non&#8211;zero read timeout to
+	  <tt>open_live</tt>and then calling
+	  <tt>dispatch</tt>allows the reception and
+	  processing of any packets that arrive when the timeout
+	  occurs. A negative <i><tt>maxcant</tt></i>causes
+	  <tt>loop</tt>to loop forever (or at least until
+	  an error occurs). 0 is returned
+	  if <i><tt>maxcant</tt></i>is exhausted.
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2723103"></a>next</h1>
+                <div class="refnamediv"><a name="id2723106"></a>
+                    <h2>Name</h2>
+                    next &#8212; Collect the next packet</div>
+                <div class="refsynopsisdiv"><a name="id2723120"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2723123"><a name="id2723123"></a>
+                        <p><code><code class="funcdef">(Pkthdr, string) <b class="fsfunc">next</b></code>();</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2723147"></a>
+                    <h2><a name="id2723147"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>next</tt>reads the next packet (by calling
+	  <tt>dispatch</tt>with a
+	  <i><tt>maxcant</tt></i>of <tt>1</tt>)
+	  and returns a tuple (header, data) where
+	  <i><tt>header</tt></i>is a
+	  <tt>Pkthdr</tt>instance describing the data
+	  passed and <i><tt>data</tt></i>is the data itself.
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2723279"></a>setfilter</h1>
+                <div class="refnamediv"><a name="id2723282"></a>
+                    <h2>Name</h2>
+                    setfilter &#8212; Specify a filter</div>
+                <div class="refsynopsisdiv"><a name="id2723294"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2723298"><a name="id2723298"></a>
+                        <p><code><code class="funcdef"><b class="fsfunc">setfilter</b></code>(<var class="pdparam">filter</var>);<br>
+                            string
+                            <var class="pdparam">filter</var>;</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2723327"></a>
+                    <h2><a name="id2723327"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>setfilter</tt>is used to specify a filter
+	  for this object.
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2723348"></a>getnet</h1>
+                <div class="refnamediv"><a name="id2723351"></a>
+                    <h2>Name</h2>
+                    getnet, getmask &#8212; Get the associated network number and mask</div>
+                <div class="refsynopsisdiv"><a name="id2723367"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2723370"><a name="id2723370"></a>
+                        <p><code><code class="funcdef">int32 <b class="fsfunc">getnet</b></code>();</code></p>
+                    </div>
+                    <div class="funcsynopsis" id="id2723392"><a name="id2723392"></a>
+                        <p><code><code class="funcdef">int32 <b class="fsfunc">getmask</b></code>();</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2723415"></a>
+                    <h2><a name="id2723415"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>getnet</tt>and <tt>getmask</tt>
+                        are used to determine the network number and mask associated
+	  with the network device attached to this
+	  <tt>Reader</tt>.
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2723448"></a>datalink</h1>
+                <div class="refnamediv"><a name="id2723451"></a>
+                    <h2>Name</h2>
+                    datalink &#8212; Obtain the link layer type</div>
+                <div class="refsynopsisdiv"><a name="id2723463"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2723466"><a name="id2723466"></a>
+                        <p><code><code class="funcdef">int <b class="fsfunc">datalink</b></code>();</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2723489"></a>
+                    <h2><a name="id2723489"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>datalink</tt>returns the link layer type; link layer types it can return include:
+	  <div class="variablelist">
+          <dl>
+              <dt><a name="id2723510"></a><span class="term"><tt>DLT_NULL</tt></span></dt>
+              <dd>
+                  <p>
+                      BSD loopback encapsulation; the
+		  link layer header is a 4&#8211;byte field, in host
+		  byte order, containing a <tt>PF_</tt>
+                      value from <tt>socket.h</tt>for the
+		  network&#8211;layer protocol of the packet.
+                  </p>
+                  <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+                      <h3 class="title"><a name="id2723550"></a>Note</h3>
+                      <p>
+                          &#8220;host byte order&#8221; is the byte order
+		    of the machine on which the packets are captured,
+		    and the <tt>PF_</tt>values are for
+		    the OS of the machine on which
+		    the packets are captured; if a live capture is
+		    being done, &#8220;host byte order&#8221; is the
+		    byte order of the machine capturing the packets,
+		    and the <tt>PF_</tt>values are those
+		    of the OS of the machine
+		    capturing the packets, but if a <i>savefile</i> is being
+		    read, the byte order and <tt>PF_</tt>
+                          values are <i>not</i> necessarily
+		    those of the machine reading the capture file.
+                      </p>
+                  </div>
+              </dd>
+              <dt><a name="id2723606"></a><span class="term"><tt>DLT_EN10MB</tt></span></dt>
+              <dd>
+                  <p>Ethernet (10Mb, 100Mb, 1000Mb, and up)</p>
+              </dd>
+              <dt><a name="id2723624"></a><span class="term"><tt>DLT_IEEE802</tt></span></dt>
+              <dd>
+                  <p>IEEE 802.5 Token Ring</p>
+              </dd>
+              <dt><a name="id2723645"></a><span class="term"><tt>DLT_ARCNET</tt></span></dt>
+              <dd>
+                  <p>ARCNET</p>
+              </dd>
+              <dt><a name="id2723536"></a><span class="term"><tt>DLT_SLIP</tt></span></dt>
+              <dd>
+                  <p>
+                      <a name="id2717681"></a>
+                      SLIP; the link layer header contains, in order:
+		  <div class="itemizedlist">
+              <ul>
+                  <li><a name="id2717695"></a>
+                      <p>
+                          a 1&#8211;byte flag, which is
+			<tt>0</tt>for packets received by
+			the machine and <tt>1</tt>for
+			packets sent by the machine.
+                      </p>
+                  </li>
+                  <li>
+                      <p>
+                          <a name="id2717721"></a>
+                          a 1&#8211;byte field, the upper 4 bits of which indicate the type of packet, as per RFC 1144:
+
+			<div class="itemizedlist">
+                <ul>
+                    <li><a name="id2717736"></a>
+                        <p>
+                            <tt>0x40</tt>; an unmodified
+			      IP datagram
+			      (<tt>TYPE_IP</tt>)
+                        </p>
+                    </li>
+                    <li><a name="id2717760"></a>
+                        <p>
+                            <tt>0x70</tt>; an
+			      uncompressed&#8211;TCP/IP
+			      datagram
+			      (<tt>UNCOMPRESSED_TCP</tt>),
+			      with that byte being the first byte of
+			      the raw IP header on
+			      the wire, containing the connection
+			      number in the protocol field
+                        </p>
+                    </li>
+                    <li><a name="id2717791"></a>
+                        <p>
+                            <tt>0x80</tt>; a
+			      compressed&#8211;TCP/IP
+			      datagram
+			      (<tt>COMPRESSED_TCP</tt>),
+			      with that byte being the first byte of
+			      the compressed TCP/IP
+			      datagram header
+                        </p>
+                    </li>
+                </ul>
+            </div>
+                      </p>
+                  </li>
+                  <li><a name="id2717824"></a>
+                      <p>
+                          for <tt>UNCOMPRESSED_TCP</tt>, the
+			rest of the modified IP
+			header, and for
+			<tt>COMPRESSED_TCP</tt>, the
+			compressed TCP/IP datagram
+			header
+                      </p>
+                  </li>
+              </ul>
+          </div>
+                      for a total of 16 bytes; the uncompressed IP datagram follows the header.
+                  </p>
+              </dd>
+              <dt><a name="id2717860"></a><span class="term"><tt>DLT_PPP</tt></span></dt>
+              <dd>
+                  <p>
+                      PPP; if the first 2 bytes are
+		  <tt>0xff</tt>and <tt>0x03</tt>,
+		  it's PPP in
+		  HDLC&#8211;like framing, with the
+		  PPP header following those two
+		  bytes, otherwise it's PPP without
+		  framing, and the packet begins with the
+		  PPP header.
+                  </p>
+              </dd>
+              <dt><a name="id2717919"></a><span class="term"><tt>DLT_FDDI</tt></span></dt>
+              <dd>
+                  <p>FDDI</p>
+              </dd>
+              <dt><a name="id2717938"></a><span class="term"><tt>DLT_ATM_RFC1483</tt></span></dt>
+              <dd>
+                  <p>
+                      RFC 1483
+		  LLC/SNAP&#8211;encapsulated
+		  ATM; the packet begins with an
+		  IEEE 802.2 LLC
+		  header.
+                  </p>
+              </dd>
+              <dt><a name="id2717976"></a><span class="term"><tt>DLT_RAW</tt></span></dt>
+              <dd>
+                  <p>
+                      Raw IP; the packet begins with an
+		  IP header.
+                  </p>
+              </dd>
+              <dt><a name="id2718002"></a><span class="term"><tt>DLT_PPP_SERIAL</tt></span></dt>
+              <dd>
+                  <p>
+                      PPP in
+		  HDLC&#8211;like framing, as per
+		  RFC 1662, or Cisco
+		  PPP with HDLC
+		  framing, as per section §4.3.1 of
+		  RFC 1547; the first byte will be
+		  <tt>0xFF</tt>for PPP
+		  in HDLC&#8211;like framing, and
+		  will be <tt>0x0F</tt>or
+		  <tt>0x8F</tt>for Cisco
+		  PPP with HDLC
+		  framing.
+                  </p>
+              </dd>
+              <dt><a name="id2718179"></a><span class="term"><tt>DLT_PPP_ETHER</tt></span></dt>
+              <dd>
+                  <p>
+                      PPPoE; the packet begins with a
+		  PPPoE header, as per
+		  RFC 2516.
+                  </p>
+              </dd>
+              <dt><a name="id2718208"></a><span class="term"><tt>DLT_C_HDLC</tt></span></dt>
+              <dd>
+                  <p>
+                      Cisco PPP with
+		  HDLC framing, as per section
+		  § 4.3.1 of RFC 1547.
+                  </p>
+              </dd>
+              <dt><a name="id2718045"></a><span class="term"><tt>DLT_IEEE802_11</tt></span></dt>
+              <dd>
+                  <p>
+                      IEEE 802.11 wireless
+		  LAN.
+                  </p>
+              </dd>
+              <dt><a name="id2718071"></a><span class="term"><tt>DLT_LOOP</tt></span></dt>
+              <dd>
+                  <p>
+                      OpenBSD loopback encapsulation; the link layer
+		  header is a 4&#8211;byte field, in network byte
+		  order, containing a <tt>PF_</tt>value
+		  from OpenBSD's <tt>socket.h</tt>for the
+		  network&#8211;layer protocol of the packet.
+                  </p>
+                  <div class="note" style="margin-left: 0.5in; margin-right: 0.5in;">
+                      <h3 class="title"><a name="id2718249"></a>Note</h3>
+                      <p>
+                          Note that, if a <i>savefile</i> is being read, those
+		    <tt>PF_</tt>values are
+		    <i>not</i> necessarily those of the
+		    machine reading the capture file.
+                      </p>
+                  </div>
+              </dd>
+              <dt><a name="id2718273"></a><span class="term"><tt>DLT_LINUX_SLL</tt></span></dt>
+              <dd>
+                  <p>
+                      <a name="id2718281"></a>
+                      Linux cooked capture encapsulation; the link layer
+		  header contains, in order:
+
+		  <div class="itemizedlist">
+              <ul>
+                  <li>
+                      <p>
+                          <a name="id2718292"></a>
+                          a 2&#8211;byte &quot;packet  type&quot;,  in  network
+			byte order, which is one of:
+
+			<div class="itemizedlist">
+                <ul>
+                    <li><a name="id2718303"></a>
+                        <p>
+                            <tt>0</tt>; packet was sent to
+			      us by somebody else.
+                        </p>
+                    </li>
+                    <li><a name="id2718320"></a>
+                        <p>
+                            <tt>1</tt>; packet was
+			      broadcast by somebody else.
+                        </p>
+                    </li>
+                    <li><a name="id2718336"></a>
+                        <p>
+                            <tt>2</tt>; packet was
+			      multicast, but not broadcast, by
+			      somebody else.
+                        </p>
+                    </li>
+                    <li><a name="id2718353"></a>
+                        <p>
+                            <tt>3</tt>; packet was sent by
+			      somebody else to somebody else.
+                        </p>
+                    </li>
+                    <li><a name="id2718369"></a>
+                        <p>
+                            <tt>4</tt>; packet was sent by
+			      us.
+                        </p>
+                    </li>
+                </ul>
+            </div>
+                      </p>
+                  </li>
+                  <li><a name="id2718388"></a>
+                      <p>
+                          a 2&#8211;byte field, in network byte order,
+			containing a Linux
+			<tt>ARPHRD_</tt>value for the
+			link layer device type.
+                      </p>
+                  </li>
+                  <li><a name="id2718403"></a>
+                      <p>
+                          a 2&#8211;byte field, in network byte order,
+			containing the length of the link layer
+			address of the sender of the packet (which
+			could be 0).
+                      </p>
+                  </li>
+                  <li><a name="id2718414"></a>
+                      <p>
+                          an 8&#8211;byte field containing that number
+			of bytes of the link layer header (if there
+			are more than 8 bytes, only the first 8 are
+			present).
+                      </p>
+                  </li>
+                  <li><a name="id2718426"></a>
+                      <p>
+                          a 2&#8211;byte field containing an Ethernet
+			protocol type, in network byte order, or
+			containing <tt>1</tt>for Novell
+			802.3 frames without an 802.2
+			LLC header or
+			<tt>4</tt>for frames beginning with
+			an 802.2 LLC header.
+                      </p>
+                  </li>
+              </ul>
+          </div>
+                  </p>
+              </dd>
+              <dt><a name="id2718463"></a><span class="term"><tt>DLT_LTALK</tt></span></dt>
+              <dd>
+                  <p>
+                      Apple LocalTalk; the packet begins with an AppleTalk
+		  LLAP header.
+                  </p>
+              </dd>
+          </dl>
+      </div>
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2718490"></a>getnonblock</h1>
+                <div class="refnamediv">
+                    <a name="id2718494"></a>
+                    <h2>Name</h2>
+                    getnonblock, setnonblock &#8212; Manipulate the
+	  <i>non&#8211;blocking</i> flag
+                </div>
+                <div class="refsynopsisdiv"><a name="id2718514"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2718516"><a name="id2718516"></a>
+                        <p><code><code class="funcdef">int <b class="fsfunc">getnonblock</b></code>();</code></p>
+                    </div>
+                    <div class="funcsynopsis" id="id2718538"><a name="id2718538"></a>
+                        <p><code><code class="funcdef"><b class="fsfunc">setnonblock</b></code>(<var class="pdparam">state</var>);<br>
+                            int
+                            <var class="pdparam">state</var>;</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2718567"></a>
+                    <h2><a name="id2718567"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>getnonblock</tt>returns the current
+	  non&#8211;blocking state of the capture descriptor; it
+	  always returns 0 on <i>savefile</i>s.
+                    </p>
+                </div>
+                <div class="refsect1">
+                    <a name="id2718596"></a>
+                    <h2><a name="id2718596"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>setnonblock</tt>puts a capture descriptor,
+	  opened with <tt>open_live</tt>, into
+	  non&#8211;blocking mode, or takes it out of
+	  non&#8211;blocking mode, depending on whether the
+	  <i><tt>state</tt></i>argument is non&#8211;zero or
+	  zero. It has no effect on <i>savefile</i>s. In non&#8211;blocking
+	  mode, an attempt to read from the capture descriptor with
+	  <tt>dispatch</tt>will, if no packets are
+	  currently available to be read, return
+	  0 immediately rather than
+	  blocking waiting for packets to arrive.
+	  <tt>loop</tt>and <tt>next</tt>will
+	  not work in non&#8211;blocking mode.
+                    </p>
+                </div>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2718128"></a>dump_open</h1>
+                <div class="refnamediv"><a name="id2718622"></a>
+                    <h2>Name</h2>
+                    dump_open &#8212; Create a Dumper object</div>
+                <div class="refsynopsisdiv"><a name="id2718635"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2718639"><a name="id2718639"></a>
+                        <p><code><code class="funcdef">Dumper <b class="fsfunc">dump_open</b></code>(<var class="pdparam">filename</var>);<br>
+                            string
+                            <var class="pdparam">filename</var>;</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2718669"></a>
+                    <h2><a name="id2718669"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>dump_open</tt>is called to open a <i>savefile</i>
+                        for writing and associate it to a newly created
+	  <tt>Dumper</tt>instance. The name
+	  <tt>-</tt>is a synonym for <tt>stdout</tt>.
+	  <i><tt>filename</tt></i>specifies the name of the
+	  file to open.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="reference">
+            <div class="titlepage">
+                <div>
+                    <h1 class="title"><a name="id2718727"></a>Dumper Object Reference</h1>
+                </div>
+                <hr>
+            </div>
+            <div class="toc">
+                <p><b>Table of Contents</b></p>
+                <dl>
+                    <dt><a href="#id2718732">dump</a></dt>
+                </dl>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2718732"></a>dump</h1>
+                <div class="refnamediv"><a name="id2718735"></a>
+                    <h2>Name</h2>
+                    dump &#8212; Dump a packet to a <i>savefile</i></div>
+                <div class="refsynopsisdiv"><a name="id2718751"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2718755"><a name="id2718755"></a>
+                        <p><code><code class="funcdef"><b class="fsfunc">dump</b></code>(<var class="pdparam">header</var>,
+                            <var class="pdparam">data</var>);<br>
+                            Pkthdr
+                            <var class="pdparam">header</var>;<br>
+                            string
+                            <var class="pdparam">data</var>;</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2718793"></a>
+                    <h2><a name="id2718793"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>dump</tt>outputs a packet to the <i>savefile</i>
+                        opened with <tt>dump_open</tt>from type
+	  <tt>Reader</tt>.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="reference">
+            <div class="titlepage">
+                <div>
+                    <h1 class="title"><a name="id2718829"></a>Pkthdr Object Reference</h1>
+                </div>
+                <hr>
+            </div>
+            <div class="toc">
+                <p><b>Table of Contents</b></p>
+                <dl>
+                    <dt><a href="#id2718835">getts</a></dt>
+                </dl>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2718835"></a>getts</h1>
+                <div class="refnamediv"><a name="id2718838"></a>
+                    <h2>Name</h2>
+                    getts, getcaplen, getlen &#8212; Obtain packet header information</div>
+                <div class="refsynopsisdiv"><a name="id2780956"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2780959"><a name="id2780959"></a>
+                        <p><code><code class="funcdef">(long, long) <b class="fsfunc">getts</b></code>();</code></p>
+                    </div>
+                    <div class="funcsynopsis" id="id2780980"><a name="id2780980"></a>
+                        <p><code><code class="funcdef">long <b class="fsfunc">getcaplen</b></code>();</code></p>
+                    </div>
+                    <div class="funcsynopsis" id="id2781001"><a name="id2781001"></a>
+                        <p><code><code class="funcdef">long <b class="fsfunc">getlen</b></code>();</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2781024"></a>
+                    <h2><a name="id2781024"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>getts</tt>, <tt>getcaplen</tt>
+                        and <tt>getlen</tt>return the timestamp,
+	  capture length and total length fields of the packet header,
+	  respectively.
+                    </p>
+                    <p>
+                        Timestamp is a tuple with two elements: the number of
+	  seconds since the Epoch, and the amount of microseconds past
+	  the current second. The capture length is the number of
+	  bytes of the packet that are available from the capture.
+	  Finally, total length gives the length of the packet, in
+	  bytes (which might be more than the number of bytes
+	  available from the capture, if the length of the packet is
+	  larger than the maximum number of bytes to capture).
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div class="reference">
+            <div class="titlepage">
+                <div>
+                    <h1 class="title"><a name="id2781073"></a>Bpf Object Reference</h1>
+                </div>
+                <hr>
+            </div>
+            <div class="toc">
+                <p><b>Table of Contents</b></p>
+                <dl>
+                    <dt><a href="#id2781080">filter</a></dt>
+                </dl>
+            </div>
+            <div class="refentry">
+                <h1 class="title"><a name="id2781080"></a>filter</h1>
+                <div class="refnamediv"><a name="id2781083"></a>
+                    <h2>Name</h2>
+                    filter &#8212; Test a packet against a compiled filter</div>
+                <div class="refsynopsisdiv"><a name="id2781096"></a>
+                    <h2>Synopsis</h2>
+                    <div class="funcsynopsis" id="id2781099"><a name="id2781099"></a>
+                        <p><code><code class="funcdef">int <b class="fsfunc">filter</b></code>(<var class="pdparam">packet</var>);<br>
+                            string
+                            <var class="pdparam">packet</var>;</code></p>
+                    </div>
+                </div>
+                <div class="refsect1">
+                    <a name="id2781129"></a>
+                    <h2><a name="id2781129"></a>DESCRIPTION</h2>
+                    <p>
+                        <tt>filter</tt>tests a packet against a
+	  compiled filter as returned by
+	  <tt>pcapy</tt>'s <tt>compile</tt>.
+	  If the packet is allowed to pass through
+	  -1 is returned, otherwise
+	  <tt>filter</tt>returns
+	  0.
+                    </p>
+                </div>
+            </div>
+        </div>
+        <div id="id2781178" class="bibliography">
+            <div class="titlepage">
+                <div>
+                    <h2 class="title"><a name="id2781178"></a>Bibliography</h2>
+                </div>
+            </div>
+            <div class="bibliodiv">
+                <h3 class="title"><a name="id2781186">Sources</a></h3>
+                <div id="id2781192" class="biblioentry">
+                    <a name="id2781192"></a>
+                    <p>
+                        <span class="bibliomisc">Portions of this work based on
+	  pcap(3) by the Lawrence
+	  Berkeley National Laboratory, University of California,
+	  Berkeley, CA.
+	. </span>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

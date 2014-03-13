@@ -1,0 +1,1097 @@
+<?xml version='1.0'?>
+<!DOCTYPE part PUBLIC "-//OASIS//DTD DocBook XML V4.1.2//EN"
+               "docbook/dtd/xml/4.1.2/docbookx.dtd" [
+  <!ENTITY corest "CORE SECURITY TECHNOLOGIES">
+]>
+<part>
+  <partinfo>
+    <copyright>
+      <year>2014</year>
+      <holder>&corest;</holder>
+    </copyright>
+    <corpauthor>&corest;</corpauthor>
+    <keywordset>
+      <keyword>pcap</keyword>
+      <keyword>packet</keyword>
+      <keyword>capture</keyword>
+      <keyword>python</keyword>
+    </keywordset>
+    <revhistory>
+      <revision>
+        <revnumber>Revision: 15</revnumber>
+        <date>Date: 2003-10-23</date>
+        <authorinitials>Author: jkohen</authorinitials>
+        <revremark>Initial revision</revremark>
+      </revision>
+    </revhistory>
+  </partinfo>
+  <title>Pcapy Reference</title>
+
+  <reference>
+    <title>Pcapy Module Reference</title>
+    <refentry>
+      <refnamediv>
+        <refname>open_live</refname>
+        <refpurpose>Obtain a packet capture descriptor to look at packets on the network</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              Reader <function>open_live</function>
+            </funcdef>
+            <paramdef>
+              string <parameter>device</parameter>
+            </paramdef>
+            <paramdef>
+              int <parameter>snaplen</parameter>
+            </paramdef>
+            <paramdef>
+              int <parameter>promisc</parameter>
+            </paramdef>
+            <paramdef>
+              int <parameter>to_ms</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>open_live</function> is used to obtain a packet
+          capture descriptor to look at packets on the network.
+          <parameter>device</parameter> is a string that specifies the
+          network device to open; on Linux systems with 2.2 or later
+          kernels, a device argument of <literal>any</literal> or
+          <constant>NULL</constant> can be used to capture packets
+          from all interfaces. <parameter>snaplen</parameter>
+          specifies the maximum number of bytes to capture.
+          <parameter>promisc</parameter> specifies if the interface is
+          to be put into promiscuous mode. (Note that even if this
+          parameter is false, the interface could well be in
+          promiscuous mode for some other reason.) For now, this
+          doesn't work on the <literal>any</literal> device; if an
+          argument of <literal>any</literal> or
+          <constant>NULL</constant> is supplied, the
+          <parameter>promisc</parameter> flag is ignored.
+          <parameter>to_ms</parameter> specifies the read timeout in
+          milliseconds. The read timeout is used to arrange that the
+          read not necessarily return immediately when a packet is
+          seen, but that it wait for some amount of time to allow more
+          packets to arrive and to read multiple packets from the OS
+          kernel in one operation. Not all platforms support a read
+          timeout; on platforms that don't, the read timeout is
+          ignored.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>open_offline</refname>
+        <refpurpose>
+          Obtain a packet capture descriptor to look at packets on a <glossterm>savefile</glossterm>
+        </refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              Reader <function>open_offline</function>
+            </funcdef>
+            <paramdef>
+              string <parameter>filename</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>open_offline</function> is called to open a
+          <glossterm>savefile</glossterm> for reading. <parameter>filename</parameter>
+          specifies the name of the file to open. The file has the
+          same format as those used by
+          <citerefentry>
+            <refentrytitle>tcpdump</refentrytitle>
+            <manvolnum>8</manvolnum>
+          </citerefentry> and
+          <citerefentry>
+            <refentrytitle>tcpslice</refentrytitle>
+            <manvolnum>8</manvolnum>
+          </citerefentry>. The name
+          <filename>-</filename> is a synonym for
+          <filename class="devicefile">stdin</filename>.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>lookupdev</refname>
+        <refpurpose>
+          Return a network device suitable for use with
+          <function>open_live</function>
+        </refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              string <function>lookupdev</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>lookupdev</function> returns the name of a network
+          device suitable for use with <function>open_live</function>.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>findalldevs</refname>
+        <refpurpose>Obtain the list of available network devices</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              string[] <function>findalldevs</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>findalldevs</function> constructs a list of
+          network devices that can be opened with
+          <function>open_live</function>. (Note that there may be
+          network devices that cannot be opened with
+          <function>open_live</function>, because, for example, that
+          process might not have sufficient privileges to open them
+          for capturing; if so, those devices will not appear on the
+          list.)
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>compile</refname>
+        <refpurpose>Compile a BPF filter</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              Bpf <function>compile</function>
+            </funcdef>
+            <paramdef>
+              int <parameter>linktype</parameter>
+            </paramdef>
+            <paramdef>
+              int <parameter>snaplen</parameter>
+            </paramdef>
+            <paramdef>
+              string <parameter>filter</parameter>
+            </paramdef>
+            <paramdef>
+              int <parameter>optimize</parameter>
+            </paramdef>
+            <paramdef>
+              int32 <parameter>netmask</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>compile</function> is used to compile the
+          <parameter>filter</parameter> into a filter program.
+          <function>snaplen</function> specifies the maximum number of
+          bytes to capture. <parameter>optimize</parameter> controls
+          whether optimization on the resulting code is performed.
+          <parameter>netmask</parameter> specifies the netmask of the
+          local network.
+        </para>
+      </refsect1>
+    </refentry>
+  </reference>
+
+  <reference>
+    <title>Reader Object Reference</title>
+    <refentry>
+      <refnamediv>
+        <refname>dispatch</refname>
+        <refname>loop</refname>
+        <refpurpose>Collect and process packets</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>dispatch</function>
+            </funcdef>
+            <paramdef>
+              int <parameter>maxcant</parameter>
+            </paramdef>
+            <paramdef>
+              void <parameter>(* callback)</parameter>
+              <funcparams>Pkthdr, string</funcparams>
+            </paramdef>
+          </funcprototype>
+
+          <funcprototype>
+            <funcdef>
+              int <function>loop</function>
+            </funcdef>
+            <paramdef>
+              int <parameter>maxcant</parameter>
+            </paramdef>
+            <paramdef>
+              void <parameter>(* callback)</parameter>
+              <funcparams>Pkthdr, string</funcparams>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>dispatch</function> is used to collect and process
+          packets. <parameter>maxcant</parameter> specifies the
+          maximum number of packets to process before returning. This
+          is not a minimum number; when reading a live capture, only
+          one bufferful of packets is read at a time, so fewer than
+          <parameter>maxcant</parameter> packets may be processed. A
+          <parameter>cnt</parameter> of <literal>-1</literal>
+          processes all the packets received in one buffer when
+          reading a live capture, or all the packets in the file when
+          reading a <glossterm>savefile</glossterm>. <parameter>callback</parameter>
+          specifies a routine to be called with two arguments: a
+          <classname>Pkthdr</classname> instance describing the data
+          passed and the data itself.
+        </para>
+        <para>
+          The number of packets read is returned.
+          <returnvalue>0</returnvalue> is returned if no packets were
+          read from a live capture (if, for example, they were
+          discarded because they didn't pass the packet filter, or if,
+          on platforms that support a read timeout that starts before
+          any packets arrive, the timeout expires before any  packets
+          arrive, or if the file descriptor for the capture device is
+          in non-blocking mode and no packets were available to be
+          read) or if no more packets are available in a <glossterm>savefile</glossterm>.
+        </para>
+        <note>
+          <para>
+            When reading a live capture, <function>dispatch</function>
+            will not necessarily return when the read times out; on
+            some platforms, the read timeout isn't supported, and, on
+            other platforms, the timer doesn't start until at least
+            one packet arrives. This means that the read timeout
+            should <emphasis>not</emphasis> be used in, for example,
+            an interactive application, to allow the packet capture
+            loop to poll for user input periodically, as there's no
+            guarantee that <function>dispatch</function> will return
+            after the timeout expires.
+          </para>
+        </note>
+        <para>
+          <function>loop</function> is similar to
+          <function>dispatch</function> except it keeps reading
+          packets until <parameter>maxcant</parameter> packets are
+          processed or an error occurs. It does
+          <emphasis>not</emphasis> return when live read timeouts
+          occur. Rather, specifying a non-zero read timeout to
+          <function>open_live</function> and then calling
+          <function>dispatch</function> allows the reception and
+          processing of any packets that arrive when the timeout
+          occurs. A negative <parameter>maxcant</parameter> causes
+          <function>loop</function> to loop forever (or at least until
+          an error occurs). <returnvalue>0</returnvalue> is returned
+          if <parameter>maxcant</parameter> is exhausted.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>next</refname>
+        <refpurpose>Collect the next packet</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              (Pkthdr, string) <function>next</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>next</function> reads the next packet (by calling
+          <function>dispatch</function> with a
+          <parameter>maxcant</parameter> of <constant>1</constant>)
+          and returns a tuple (header, data) where
+          <parameter>header</parameter> is a
+          <classname>Pkthdr</classname> instance describing the data
+          passed and <parameter>data</parameter> is the data itself.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>setfilter</refname>
+        <refpurpose>Specify a filter</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              <function>setfilter</function>
+            </funcdef>
+            <paramdef>
+              string <parameter>filter</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>setfilter</function> is used to specify a filter
+          for this object.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>getnet</refname>
+        <refname>getmask</refname>
+        <refpurpose>Get the associated network number and mask</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int32 <function>getnet</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int32 <function>getmask</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>getnet</function> and <function>getmask</function>
+          are used to determine the network number and mask associated
+          with the network device attached to this
+          <classname>Reader</classname>.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>datalink</refname>
+        <refpurpose>Obtain the link layer type</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>datalink</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>datalink</function> returns the link layer type; link layer types it can return include:
+          <variablelist>
+            <varlistentry>
+              <term>
+                <constant>DLT_NULL</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  <acronym>BSD</acronym> loopback encapsulation; the
+                  link layer header is a 4-byte field, in host
+                  byte order, containing a <constant>PF_</constant>
+                  value from <filename
+         class="headerfile">socket.h</filename> for the
+                  network-layer protocol of the packet.
+                </simpara>
+                <note>
+                  <simpara>
+                    <quote>host byte order</quote> is the byte order
+                    of the machine on which the packets are captured,
+                    and the <constant>PF_</constant> values are for
+                    the <acronym>OS</acronym> of the machine on which
+                    the packets are captured; if a live capture is
+                    being done, <quote>host byte order</quote> is the
+                    byte order of the machine capturing the packets,
+                    and the <constant>PF_</constant> values are those
+                    of the <acronym>OS</acronym> of the machine
+                    capturing the packets, but if a <glossterm>savefile</glossterm> is being
+                    read, the byte order and <constant>PF_</constant>
+                    values are <emphasis>not</emphasis> necessarily
+                    those of the machine reading the capture file.
+                  </simpara>
+                </note>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_EN10MB</constant>
+              </term>
+              <listitem>
+                <simpara>Ethernet (10Mb, 100Mb, 1000Mb, and up)</simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_IEEE802</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  <acronym>IEEE</acronym> 802.5 Token Ring
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_ARCNET</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  <acronym>ARCNET</acronym>
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_SLIP</constant>
+              </term>
+              <listitem>
+                <para>
+                  <acronym>SLIP</acronym>; the link layer header contains, in order:
+                  <itemizedlist>
+                    <listitem>
+                      <simpara>
+                        a 1-byte flag, which is
+                        <literal>0</literal> for packets received by
+                        the machine and <literal>1</literal> for
+                        packets sent by the machine.
+                      </simpara>
+                    </listitem>
+
+                    <listitem>
+                      <para>
+                        a 1-byte field, the upper 4 bits of which indicate the type of packet, as per <acronym>RFC</acronym> 1144:
+
+                        <itemizedlist>
+                          <listitem>
+                            <simpara>
+                              <literal>0x40</literal>; an unmodified
+                              <acronym>IP</acronym> datagram
+                              (<constant>TYPE_IP</constant>)
+                            </simpara>
+                          </listitem>
+
+                          <listitem>
+                            <simpara>
+                              <literal>0x70</literal>; an
+                              uncompressed-<acronym>TCP/IP</acronym>
+                              datagram
+                              (<constant>UNCOMPRESSED_TCP</constant>),
+                              with that byte being the first byte of
+                              the raw <acronym>IP</acronym> header on
+                              the wire, containing the connection
+                              number in the protocol field
+                            </simpara>
+                          </listitem>
+
+                          <listitem>
+                            <simpara>
+                              <literal>0x80</literal>; a
+                              compressed-<acronym>TCP/IP</acronym>
+                              datagram
+                              (<constant>COMPRESSED_TCP</constant>),
+                              with that byte being the first byte of
+                              the compressed <acronym>TCP/IP</acronym>
+                              datagram header
+                            </simpara>
+                          </listitem>
+                        </itemizedlist>
+                      </para>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>
+                        for <constant>UNCOMPRESSED_TCP</constant>, the
+                        rest of the modified <acronym>IP</acronym>
+                        header, and for
+                        <constant>COMPRESSED_TCP</constant>, the
+                        compressed <acronym>TCP/IP</acronym> datagram
+                        header
+                      </simpara>
+                    </listitem>
+
+                  </itemizedlist>
+                  for a total of 16 bytes; the uncompressed <acronym>IP</acronym> datagram follows the header.
+                </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_PPP</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  <acronym>PPP</acronym>; if the first 2 bytes are
+                  <literal>0xff</literal> and <literal>0x03</literal>,
+                  it's <acronym>PPP</acronym> in
+                  <acronym>HDLC</acronym>-like framing, with the
+                  <acronym>PPP</acronym> header following those two
+                  bytes, otherwise it's <acronym>PPP</acronym> without
+                  framing, and the packet begins with the
+                  <acronym>PPP</acronym> header.
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_FDDI</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  <acronym>FDDI</acronym>
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_ATM_RFC1483</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  <acronym>RFC</acronym> 1483
+                  <acronym>LLC/SNAP</acronym>-encapsulated
+                  <acronym>ATM</acronym>; the packet begins with an
+                  <acronym>IEEE</acronym> 802.2 <acronym>LLC</acronym>
+                  header.
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_RAW</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  Raw <acronym>IP</acronym>; the packet begins with an
+                  <acronym>IP</acronym> header.
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_PPP_SERIAL</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  <acronym>PPP</acronym> in
+                  <acronym>HDLC</acronym>-like framing, as per
+                  <acronym>RFC</acronym> 1662, or Cisco
+                  <acronym>PPP</acronym> with <acronym>HDLC</acronym>
+                  framing, as per section 4.3.1 of
+                  <acronym>RFC</acronym> 1547; the first byte will be
+                  <literal>0xFF</literal> for <acronym>PPP</acronym>
+                  in <acronym>HDLC</acronym>-like framing, and
+                  will be <literal>0x0F</literal> or
+                  <literal>0x8F</literal> for Cisco
+                  <acronym>PPP</acronym> with <acronym>HDLC</acronym>
+                  framing.
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_PPP_ETHER</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  <acronym>PPPoE</acronym>; the packet begins with a
+                  <acronym>PPPoE</acronym> header, as per
+                  <acronym>RFC</acronym> 2516.
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_C_HDLC</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  Cisco <acronym>PPP</acronym> with
+                  <acronym>HDLC</acronym> framing, as per section
+                   4.3.1 of <acronym>RFC</acronym> 1547.
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_IEEE802_11</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  <acronym>IEEE</acronym> 802.11 wireless
+                  <acronym>LAN</acronym>.
+                </simpara>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_LOOP</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  OpenBSD loopback encapsulation; the link layer
+                  header is a 4-byte field, in network byte
+                  order, containing a <constant>PF_</constant> value
+                  from OpenBSD's <filename
+     class="headerfile">socket.h</filename> for the
+                  network-layer protocol of the packet.
+                </simpara>
+                <note>
+                  <simpara>
+                    Note that, if a <glossterm>savefile</glossterm> is being read, those
+                    <constant>PF_</constant> values are
+                    <emphasis>not</emphasis> necessarily those of the
+                    machine reading the capture file.
+                  </simpara>
+                </note>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_LINUX_SLL</constant>
+              </term>
+              <listitem>
+                <para>
+                  Linux cooked capture encapsulation; the link layer
+                  header contains, in order:
+
+                  <itemizedlist>
+                    <listitem>
+                      <para>
+                        a 2-byte "packet  type",  in  network
+                        byte order, which is one of:
+
+                        <itemizedlist>
+                          <listitem>
+                            <simpara>
+                              <literal>0</literal>; packet was sent to
+                              us by somebody else.
+                            </simpara>
+                          </listitem>
+
+                          <listitem>
+                            <simpara>
+                              <literal>1</literal>; packet was
+                              broadcast by somebody else.
+                            </simpara>
+                          </listitem>
+
+                          <listitem>
+                            <simpara>
+                              <literal>2</literal>; packet was
+                              multicast, but not broadcast, by
+                              somebody else.
+                            </simpara>
+                          </listitem>
+
+                          <listitem>
+                            <simpara>
+                              <literal>3</literal>; packet was sent by
+                              somebody else to somebody else.
+                            </simpara>
+                          </listitem>
+
+                          <listitem>
+                            <simpara>
+                              <literal>4</literal>; packet was sent by
+                              us.
+                            </simpara>
+                          </listitem>
+                        </itemizedlist>
+                      </para>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>
+                        a 2-byte field, in network byte order,
+                        containing a Linux
+                        <constant>ARPHRD_</constant> value for the
+                        link layer device type.
+                      </simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>
+                        a 2-byte field, in network byte order,
+                        containing the length of the link layer
+                        address of the sender of the packet (which
+                        could be 0).
+                      </simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>
+                        an 8-byte field containing that number
+                        of bytes of the link layer header (if there
+                        are more than 8 bytes, only the first 8 are
+                        present).
+                      </simpara>
+                    </listitem>
+
+                    <listitem>
+                      <simpara>
+                        a 2-byte field containing an Ethernet
+                        protocol type, in network byte order, or
+                        containing <literal>1</literal> for Novell
+                        802.3 frames without an 802.2
+                        <acronym>LLC</acronym> header or
+                        <literal>4</literal> for frames beginning with
+                        an 802.2 <acronym>LLC</acronym> header.
+                      </simpara>
+                    </listitem>
+                  </itemizedlist>
+                </para>
+              </listitem>
+            </varlistentry>
+
+            <varlistentry>
+              <term>
+                <constant>DLT_LTALK</constant>
+              </term>
+              <listitem>
+                <simpara>
+                  Apple LocalTalk; the packet begins with an AppleTalk
+                  <acronym>LLAP</acronym> header.
+                </simpara>
+              </listitem>
+            </varlistentry>
+          </variablelist>
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>getnonblock</refname>
+        <refname>setnonblock</refname>
+        <refpurpose>
+          Manipulate the
+          <firstterm>non-blocking</firstterm> flag
+        </refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>getnonblock</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              <function>setnonblock</function>
+            </funcdef>
+            <paramdef>
+              int <parameter>state</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>getnonblock</function> returns the current
+          non-blocking state of the capture descriptor; it
+          always returns <returnvalue>0</returnvalue> on <glossterm>savefile</glossterm>s.
+        </para>
+      </refsect1>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>setnonblock</function> puts a capture descriptor,
+          opened with <function>open_live</function>, into
+          non-blocking mode, or takes it out of
+          non-blocking mode, depending on whether the
+          <parameter>state</parameter> argument is non-zero or
+          zero. It has no effect on <glossterm>savefile</glossterm>s. In non-blocking
+          mode, an attempt to read from the capture descriptor with
+          <function>dispatch</function> will, if no packets are
+          currently available to be read, return
+          <returnvalue>0</returnvalue> immediately rather than
+          blocking waiting for packets to arrive.
+          <function>loop</function> and <function>next</function> will
+          not work in non-blocking mode.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>dump_open</refname>
+        <refpurpose>Create a Dumper object</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              Dumper <function>dump_open</function>
+            </funcdef>
+            <paramdef>
+              string <parameter>filename</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>dump_open</function> is called to open a <glossterm>savefile</glossterm>
+          for writing and associate it to a newly created
+          <classname>Dumper</classname> instance. The name
+          <filename>-</filename> is a synonym for <filename
+	    class="devicefile">stdout</filename>.
+          <parameter>filename</parameter> specifies the name of the
+          file to open.
+        </para>
+      </refsect1>
+    </refentry>
+  </reference>
+
+  <reference>
+    <title>Dumper Object Reference</title>
+    <refentry>
+      <refnamediv>
+        <refname>dump</refname>
+        <refpurpose>
+          Dump a packet to a <glossterm>savefile</glossterm>
+        </refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              <function>dump</function>
+            </funcdef>
+            <paramdef>
+              Pkthdr <parameter>header</parameter>
+            </paramdef>
+            <paramdef>
+              string <parameter>data</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>dump</function> outputs a packet to the <glossterm>savefile</glossterm>
+          opened with <function>dump_open</function> from type
+          <classname>Reader</classname>.
+        </para>
+      </refsect1>
+    </refentry>
+  </reference>
+
+  <reference>
+    <title>Pkthdr Object Reference</title>
+    <refentry>
+      <refnamediv>
+        <refname>getts</refname>
+        <refname>getcaplen</refname>
+        <refname>getlen</refname>
+        <refpurpose>Obtain packet header information</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              (long, long) <function>getts</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              long <function>getcaplen</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              long <function>getlen</function>
+            </funcdef>
+            <void/>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>getts</function>, <function>getcaplen</function>
+          and <function>getlen</function> return the timestamp,
+          capture length and total length fields of the packet header,
+          respectively.
+        </para>
+        <para>
+          Timestamp is a tuple with two elements: the number of
+          seconds since the Epoch, and the amount of microseconds past
+          the current second. The capture length is the number of
+          bytes of the packet that are available from the capture.
+          Finally, total length gives the length of the packet, in
+          bytes (which might be more than the number of bytes
+          available from the capture, if the length of the packet is
+          larger than the maximum number of bytes to capture).
+        </para>
+      </refsect1>
+    </refentry>
+  </reference>
+
+  <reference>
+    <title>Bpf Object Reference</title>
+    <refentry>
+      <refnamediv>
+        <refname>filter</refname>
+        <refpurpose>Test a packet against a compiled filter</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>filter</function>
+            </funcdef>
+            <paramdef>
+              string <parameter>packet</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>filter</function> tests a packet against a
+          compiled filter as returned by
+          <classname>pcapy</classname>'s <function>compile</function>.
+          If the packet is allowed to pass through
+          <returnvalue>-1</returnvalue> is returned, otherwise
+          <function>filter</function> returns
+          <returnvalue>0</returnvalue>.
+        </para>
+      </refsect1>
+    </refentry>
+  </reference>
+
+  <bibliography>
+    <title>Bibliography</title>
+    <bibliodiv>
+      <title>Sources</title>
+      <biblioentry>
+        <bibliomisc>
+          Portions of this work based on
+          <citerefentry>
+            <refentrytitle>pcap</refentrytitle>
+            <manvolnum>3</manvolnum>
+          </citerefentry> by the Lawrence
+          Berkeley National Laboratory, University of California,
+          Berkeley, CA.
+        </bibliomisc>
+      </biblioentry>
+    </bibliodiv>
+  </bibliography>
+</part>

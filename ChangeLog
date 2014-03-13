@@ -1,0 +1,27 @@
+2010-08-25  Ezequiel Gutesman <gutes@coresecurity.com>
+    * removed check for pcap_sendpacket function
+
+2010-07-30  Ezequiel Gutesman <gutes@coresecurity.com>
+    * pcapy.cc: fixed bug in initpcapy,  Pkthdr_type.ob_type and Pdumpertype.ob_type were not set. See http://bugs.debian.org/cgi-bin/bugreport.cgi?bug=589956 (reported by Piotr Lewandowski)
+
+2007-03-27  Max Caceres <max@coresecurity.com>
+    * pcapobj.cc: wrapped pcap_sendpacket for sending packets in all platforms.
+
+2005-12-09  Max Caceres <max@coresecurity.com>
+    * pcapy.cc: open_live doesn't raise an exception anymore when network/netmask information is not available (i.e. when sniffing on devices without an assigned IP address). Reported by Scott Raynel.
+
+2005-09-14  Max Caceres <max@coresecurity.com>
+    * pcapobj.cc: fixed bug where exceptions thrown inside a callback where not handled properly. Fix relies on fairly new pcap_breakloop function.
+    * pcapy.cc: in Windows uses findalldevs() packaged with new Winpcap 3.1
+
+2005-08-15  Max Caceres <max@coresecurity.com>
+    * pcapy.cc: fixed bug where getnet() and getmask() always returned 0.0.0.0 (reported by Jeff Connelly)
+
+2005-07-28  Max Caceres <max@coresecurity.com>
+    * pcapobj.cc: fixed a memory leak in PythonCallback (reported by fraca7 _at_ free.fr).
+
+2004-01-05  Javier Kohen  <jkohen@coresecurity.com>
+    * setup.py: force linking with G++ when using GCC, to avoid a missing symbol in some setups.
+
+2003-11-28  Javier Kohen  <jkohen@coresecurity.com>
+    * dcerpc_v4.py: Fixed self.bind variable having the same name than a method.
