@@ -1,7 +1,7 @@
 # $Id: setup.py 47 2010-08-25 19:07:28Z aweil $
 
 import sys, os
-from distutils.core import setup, Extension
+from setuptools import setup, Extension
 import distutils.ccompiler
 import distutils.errors
 
