@@ -52,6 +52,8 @@ This extension has been tested under Linux and Windows systems
 and is known to work there, but it ought to work out-of-the-box on any
 system where Python and libpcap are available.
 
+For windows please refer to this [link] (https://github.com/CoreSecurity/pcapy/wiki/Compiling-Pcapy-on-Windows).
+
 ##Licensing##
 
 This software is provided under under a slightly modified version of
