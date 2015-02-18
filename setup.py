@@ -55,6 +55,7 @@ setup(name = PACKAGE_NAME,
       maintainer = "CORE Security",
       maintainer_email = "oss@coresecurity.com",
       description = "Python pcap extension",
+      license = "Apache modified",
       ext_modules = [Extension(
           name = PACKAGE_NAME,
           sources = sources,
