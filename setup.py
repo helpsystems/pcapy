@@ -49,10 +49,10 @@ sysconfig._init_posix = my_init_posix
 
 setup(name = PACKAGE_NAME,
       version = "0.10.8",
-      url = "http://oss.coresecurity.com/projects/pcapy.html",
-      author = "Maximiliano Caceres",
+      url = "https://github.com/CoreSecurity/pcapy",
+      author = "CORE Security",
       author_email = "oss@coresecurity.com",
-      maintainer = "Core Security Technologies",
+      maintainer = "CORE Security",
       maintainer_email = "oss@coresecurity.com",
       description = "Python pcap extension",
       ext_modules = [Extension(
