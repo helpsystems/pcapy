@@ -19,7 +19,7 @@ if sys.platform =='win32':
     library_dirs.append(r'c:\devel\oss\wpdpack\Lib')
     libraries = ['wpcap', 'packet', 'ws2_32']
 else:
-    libraries = ['pcap']
+    libraries = ['pcap', 'stdc++']
 
 
 # end of user configurable parameters
