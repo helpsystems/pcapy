@@ -49,27 +49,55 @@ static PyMethodDef p_methods[] = {
 static PyObject*
 pcap_getattr(pcapdumper* pp, char* name)
 {
+#if PY_MAJOR_VERSION >= 3
+  PyObject *nameobj = PyUnicode_FromString(name);
+  return PyObject_GenericGetAttr((PyObject *)pp, nameobj);
+#else
   return Py_FindMethod(p_methods, (PyObject*)pp, name);
+#endif
 }
 
 
 PyTypeObject Pdumpertype = {
+#if PY_MAJOR_VERSION >= 3
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"Dumper",                  /* tp_name */
+    sizeof(pcapdumper),        /* tp_basicsize */
+    0,                         /* tp_itemsize */
+    (destructor)pcap_dealloc,  /* tp_dealloc */
+    0,                         /* tp_print */
+    (getattrfunc)pcap_getattr, /* tp_getattr */
+    0,                         /* tp_setattr */
+    0,                         /* tp_reserved */
+    0,                         /* tp_repr */
+    0,                         /* tp_as_number */
+    0,                         /* tp_as_sequence */
+    0,                         /* tp_as_mapping */
+    0,                         /* tp_hash  */
+    0,                         /* tp_call */
+    0,                         /* tp_str */
+    0,                         /* tp_getattro */
+    0,                         /* tp_setattro */
+    0,                         /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT,        /* tp_flags */
+    "",                        /* tp_doc */
+#else
   PyObject_HEAD_INIT(NULL)
   0,
   "Dumper",
   sizeof(pcapdumper),
   0,
-
   /* methods */
-  (destructor)pcap_dealloc,  /*tp_dealloc*/
-  0,			  /*tp_print*/
-  (getattrfunc)pcap_getattr, /*tp_getattr*/
-  0,			  /*tp_setattr*/
-  0,			  /*tp_compare*/
-  0,			  /*tp_repr*/
-  0,			  /*tp_as_number*/
-  0,			  /*tp_as_sequence*/
-  0,			  /*tp_as_mapping*/
+  (destructor)pcap_dealloc,  /* tp_dealloc */
+  0,                         /* tp_print */
+  (getattrfunc)pcap_getattr, /* tp_getattr */
+  0,                         /* tp_setattr */
+  0,                         /* tp_compare */
+  0,                         /* tp_repr */
+  0,                         /* tp_as_number */
+  0,                         /* tp_as_sequence */
+  0,                         /* tp_as_mapping */
+#endif
 };
 
 
@@ -94,7 +122,7 @@ p_dump(register pcapdumper* pp, PyObject* args)
 	u_char *data;
 	int       len;
 
-	if (pp->ob_type != &Pdumpertype) {
+	if (Py_TYPE(pp) != &Pdumpertype) {
 		PyErr_SetString(PcapError, "Not a pcapdumper object");
 		return NULL;
 	}

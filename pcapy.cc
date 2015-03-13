@@ -182,20 +182,49 @@ static PyMethodDef pcap_methods[] = {
 };
 
 
+#if PY_MAJOR_VERSION >= 3
+PyDoc_STRVAR(pcap_doc, "A wrapper for the Packet Capture (PCAP) library");
+
+static struct PyModuleDef pcapy_module = {
+	PyModuleDef_HEAD_INIT,
+	"pcapy",      /* m_name */
+	pcap_doc,     /* m_doc */
+	-1,           /* m_size */
+	pcap_methods, /* m_methods */
+	NULL,         /* m_reload */
+	NULL,         /* m_traverse */
+	NULL,         /* m_clear */
+	NULL,         /* m_free */
+};
+#else
+
 static char *pcap_doc =
 "\nA wrapper for the Packet Capture (PCAP) library\n";
+#endif //PY_MAJOR_VERSION >= 3
 
 
+#if PY_MAJOR_VERSION >= 3
+//PyObject *
+PyMODINIT_FUNC
+PyInit_pcapy(void)
+
+#else
 void
 initpcapy(void)
+
+#endif //PY_MAJOR_VERSION >= 3
 {
   PyObject *m, *d;
 
-  Pcaptype.ob_type =  &PyType_Type;
-  Pkthdr_type.ob_type = &PyType_Type;
-  Pdumpertype.ob_type = &PyType_Type;
+  //Pcaptype.ob_type = &PyType_Type;
+  //Pkthdr_type.ob_type = &PyType_Type;
+  //Pdumpertype.ob_type = &PyType_Type;
 
+#if PY_MAJOR_VERSION >= 3
+  m = PyModule_Create(&pcapy_module);
+#else  //PY_MAJOR_VERSION >= 3
   m = Py_InitModule3("pcapy", pcap_methods, pcap_doc);
+#endif
 
   /* Direct from pcap's net/bpf.h. */
   PyModule_AddIntConstant(m, "DLT_NULL", 0);
@@ -219,4 +248,7 @@ initpcapy(void)
   PcapError = PyErr_NewException("pcapy.PcapError", NULL, NULL );
   if( PcapError )
     PyDict_SetItemString( d, "PcapError", PcapError );
+#if PY_MAJOR_VERSION >= 3
+  return m;
+#endif  //PY_MAJOR_VERSION >= 3
 }

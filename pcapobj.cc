@@ -76,27 +76,56 @@ static PyMethodDef p_methods[] = {
 static PyObject*
 pcap_getattr(pcapobject* pp, char* name)
 {
+#if PY_MAJOR_VERSION >= 3
+	PyObject *nameobj = PyUnicode_FromString(name);
+	return PyObject_GenericGetAttr((PyObject *)pp, nameobj);
+#else
   return Py_FindMethod(p_methods, (PyObject*)pp, name);
+#endif
 }
 
 
 PyTypeObject Pcaptype = {
+#if PY_MAJOR_VERSION >= 3
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+	"Reader",                  /* tp_name */
+    sizeof(pcapobject),        /* tp_basicsize */
+    0,                         /* tp_itemsize */
+
+    (destructor)pcap_dealloc,  /* tp_dealloc */
+    0,                         /* tp_print */
+    (getattrfunc)pcap_getattr, /* tp_getattr */
+    0,                         /* tp_setattr */
+    0,                         /* tp_reserved */
+    0,                         /* tp_repr */
+    0,                         /* tp_as_number */
+    0,                         /* tp_as_sequence */
+    0,                         /* tp_as_mapping */
+    0,                         /* tp_hash  */
+    0,                         /* tp_call */
+    0,                         /* tp_str */
+    0,                         /* tp_getattro */
+    0,                         /* tp_setattro */
+    0,                         /* tp_as_buffer */
+    Py_TPFLAGS_DEFAULT,        /* tp_flags */
+    "",                        /* tp_doc */
+#else
   PyObject_HEAD_INIT(NULL)
   0,
   "Reader",
   sizeof(pcapobject),
   0,
-
   /* methods */
-  (destructor)pcap_dealloc,  /*tp_dealloc*/
-  0,			  /*tp_print*/
-  (getattrfunc)pcap_getattr, /*tp_getattr*/
-  0,			  /*tp_setattr*/
-  0,			  /*tp_compare*/
-  0,			  /*tp_repr*/
-  0,			  /*tp_as_number*/
-  0,			  /*tp_as_sequence*/
-  0,			  /*tp_as_mapping*/
+  (destructor)pcap_dealloc,    /* tp_dealloc*/
+  0,                           /* tp_print*/
+  (getattrfunc)pcap_getattr,   /* tp_getattr*/
+  0,                           /* tp_setattr*/
+  0,                           /* tp_compare*/
+  0,                           /* tp_repr*/
+  0,                           /* tp_as_number*/
+  0,                           /* tp_as_sequence*/
+  0,                           /* tp_as_mapping*/
+#endif
 };
 
 
@@ -129,7 +158,7 @@ static void ntos(char* dst, unsigned int n, int ip)
 static PyObject*
 p_getnet(register pcapobject* pp, PyObject* args)
 {
-  if (pp->ob_type != &Pcaptype)
+  if (Py_TYPE(pp) != &Pcaptype)
     {
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
@@ -143,7 +172,7 @@ p_getnet(register pcapobject* pp, PyObject* args)
 static PyObject*
 p_getmask(register pcapobject* pp, PyObject* args)
 {
-  if (pp->ob_type != &Pcaptype)
+  if (Py_TYPE(pp) != &Pcaptype)
     {
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
@@ -161,7 +190,7 @@ p_setfilter(register pcapobject* pp, PyObject* args)
   int status;
   char* str;
 
-  if (pp->ob_type != &Pcaptype)
+  if (Py_TYPE(pp) != &Pcaptype)
     {
       PyErr_SetString(PcapError, "Not a pcap object");
 	return NULL;
@@ -194,7 +223,7 @@ p_next(register pcapobject* pp, PyObject*)
   struct pcap_pkthdr hdr;
   const unsigned char *buf;
 
-  if (pp->ob_type != &Pcaptype)
+  if (Py_TYPE(pp) != &Pcaptype)
     {
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
@@ -278,7 +307,7 @@ p_dispatch(register pcapobject* pp, PyObject* args)
   int cant, ret;
   PyObject *PyFunc;
 
-  if (pp->ob_type != &Pcaptype)
+  if (Py_TYPE(pp) != &Pcaptype)
     {
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
@@ -293,7 +322,7 @@ p_dispatch(register pcapobject* pp, PyObject* args)
   PyEval_RestoreThread(ctx.thread_state);
 
   if(ret<0) {
-    if (ret!=-2)  
+    if (ret!=-2)
       /* pcap error, pcap_breakloop was not called so error is not set */
       PyErr_SetString(PcapError, pcap_geterr(pp->pcap));
     return NULL;
@@ -308,7 +337,7 @@ p_dump_open(register pcapobject* pp, PyObject* args)
   char *filename;
   pcap_dumper_t *ret;
 
-  if (pp->ob_type != &Pcaptype)
+  if (Py_TYPE(pp) != &Pcaptype)
     {
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
@@ -334,7 +363,7 @@ p_loop(register pcapobject* pp, PyObject* args)
   int cant, ret;
   PyObject *PyFunc;
 
-  if (pp->ob_type != &Pcaptype)
+  if (Py_TYPE(pp) != &Pcaptype)
     {
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
@@ -349,7 +378,7 @@ p_loop(register pcapobject* pp, PyObject* args)
   PyEval_RestoreThread(ctx.thread_state);
 
   if(ret<0) {
-    if (ret!=-2)  
+    if (ret!=-2)
       /* pcap error, pcap_breakloop was not called so error is not set */
       PyErr_SetString(PcapError, pcap_geterr(pp->pcap));
     return NULL;
@@ -363,7 +392,7 @@ p_loop(register pcapobject* pp, PyObject* args)
 static PyObject*
 p_datalink(register pcapobject* pp, PyObject* args)
 {
-	if (pp->ob_type != &Pcaptype) {
+	if (Py_TYPE(pp) != &Pcaptype) {
 		PyErr_SetString(PcapError, "Not a pcap object");
 		return NULL;
 	}
@@ -376,7 +405,7 @@ p_datalink(register pcapobject* pp, PyObject* args)
 static PyObject*
 p_setnonblock(register pcapobject* pp, PyObject* args)
 {
-	if (pp->ob_type != &Pcaptype) {
+	if (Py_TYPE(pp) != &Pcaptype) {
 		PyErr_SetString(PcapError, "Not a pcap object");
 		return NULL;
 	}
@@ -400,7 +429,7 @@ p_setnonblock(register pcapobject* pp, PyObject* args)
 static PyObject*
 p_getnonblock(register pcapobject* pp, PyObject* args)
 {
-	if (pp->ob_type != &Pcaptype) {
+	if (Py_TYPE(pp) != &Pcaptype) {
 		PyErr_SetString(PcapError, "Not a pcap object");
 		return NULL;
 	}
@@ -422,7 +451,7 @@ p_sendpacket(register pcapobject* pp, PyObject* args)
   unsigned char* str;
   unsigned int length;
 
-  if (pp->ob_type != &Pcaptype)
+  if (Py_TYPE(pp) != &Pcaptype)
     {
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
