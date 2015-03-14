@@ -57,30 +57,47 @@ bpfprog_getattr(bpfobject* pp, char* name)
 PyTypeObject BPFProgramtype = {
 #if PY_MAJOR_VERSION >= 3
 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-	"Bpf",                          /* tp_name */
-    sizeof(bpfobject),              /* tp_basicsize */
-    0,                              /* tp_itemsize */
-    (destructor)bpfprog_dealloc,    /* tp_dealloc */
-    0,                              /* tp_print */
-    (getattrfunc)bpfprog_getattr,   /* tp_getattr */
-    0,                              /* tp_setattr */
-    0,                              /* tp_reserved */
-    0,                              /* tp_repr */
-    0,                              /* tp_as_number */
-    0,                              /* tp_as_sequence */
-    0,                              /* tp_as_mapping */
-    0,                              /* tp_hash  */
-    0,                              /* tp_call */
-    0,                              /* tp_str */
-    0,                              /* tp_getattro */
-    0,                              /* tp_setattro */
-    0,                              /* tp_as_buffer */
-    Py_TPFLAGS_DEFAULT,             /* tp_flags */
-    "",                             /* tp_doc */
+  "Bpf",                        /* tp_name */
+  sizeof(bpfobject),            /* tp_basicsize */
+  0,                            /* tp_itemsize */
+  (destructor)bpfprog_dealloc,  /* tp_dealloc */
+  0,                            /* tp_print */
+  (getattrfunc)bpfprog_getattr, /* tp_getattr */
+  0,                            /* tp_setattr */
+  0,                            /* tp_reserved */
+  0,                            /* tp_repr */
+  0,                            /* tp_as_number */
+  0,                            /* tp_as_sequence */
+  0,                            /* tp_as_mapping */
+  0,                            /* tp_hash */
+  0,                            /* tp_call */
+  0,                            /* tp_str */
+  0,                            /* tp_getattro */
+  0,                            /* tp_setattro */
+  0,                            /* tp_as_buffer */
+  Py_TPFLAGS_DEFAULT,           /* tp_flags */
+  NULL,                         /* tp_doc */
+  0,                            /* tp_traverse */
+  0,                            /* tp_clear */
+  0,                            /* tp_richcompare */
+  0,                            /* tp_weaklistoffset */
+  0,                            /* tp_iter */
+  0,                            /* tp_iternext */
+  bpf_methods,                  /* tp_methods */
+  0,                            /* tp_members */
+  0,                            /* tp_getset */
+  0,                            /* tp_base */
+  0,                            /* tp_dict */
+  0,                            /* tp_descr_get */
+  0,                            /* tp_descr_set */
+  0,                            /* tp_dictoffset */
+  0,                            /* tp_init */
+  0,                            /* tp_alloc */
+  0,                            /* tp_new */
 #else
   PyObject_HEAD_INIT(NULL)
   0,
-  "Bpf", // 先看其他pcap库的api如何
+  "Bpf",
   sizeof(bpfobject),
   0,
   /* methods */
@@ -100,6 +117,9 @@ PyTypeObject BPFProgramtype = {
 PyObject*
 new_bpfobject(const struct bpf_program &bpfprog)
 {
+  if (PyType_Ready(&BPFProgramtype) < 0)
+    return NULL;
+
   bpfobject *bpf;
   bpf = PyObject_New(bpfobject, &BPFProgramtype);
   if (bpf == NULL)
@@ -132,3 +152,4 @@ p_filter(register bpfobject* bpf, PyObject* args)
 
   return Py_BuildValue("i", status);
 }
+/* vim: set tabstop=2 shiftwidth=2 expandtab: */
