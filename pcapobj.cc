@@ -255,6 +255,7 @@ p_next(register pcapobject* pp, PyObject*)
 
   if(!buf)
     {
+      // XXX: PcapError is a void string (aka nothing)
       PyErr_SetString(PcapError, pcap_geterr(pp->pcap));
       return NULL;
     }
@@ -263,7 +264,14 @@ p_next(register pcapobject* pp, PyObject*)
     if (pkthdr)
     {
         PyObject *ret = NULL;
-        ret = Py_BuildValue("(Os#)", pkthdr, buf, hdr.caplen);
+
+        #if PY_MAJOR_VERSION >= 3
+          /* return bytes */
+          ret = Py_BuildValue("(Oy#)", pkthdr, buf, hdr.caplen);
+        #else
+          ret = Py_BuildValue("(Os#)", pkthdr, buf, hdr.caplen);
+        #endif
+
         Py_DECREF(pkthdr);
         return ret;
     }
