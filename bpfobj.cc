@@ -32,9 +32,12 @@ bpfprog_dealloc(register bpfobject* bpf)
   PyObject_Del(bpf);
 }
 
+PyObject* BPFError;
+
 
 // BPFProgram methods
 static PyObject* p_filter(register bpfobject* bpf, PyObject* args);
+static PyObject* p_new_bpfobject(PyTypeObject *type, PyObject* args, PyObject *kwags);
 
 
 static PyMethodDef bpf_methods[] = {
@@ -54,10 +57,10 @@ bpfprog_getattr(bpfobject* pp, char* name)
 }
 
 
-PyTypeObject BPFProgramtype = {
+PyTypeObject BPFProgramType = {
 #if PY_MAJOR_VERSION >= 3
 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
-  "Bpf",                        /* tp_name */
+  "BPFProgram",                 /* tp_name */
   sizeof(bpfobject),            /* tp_basicsize */
   0,                            /* tp_itemsize */
   (destructor)bpfprog_dealloc,  /* tp_dealloc */
@@ -76,7 +79,7 @@ PyTypeObject BPFProgramtype = {
   0,                            /* tp_setattro */
   0,                            /* tp_as_buffer */
   Py_TPFLAGS_DEFAULT,           /* tp_flags */
-  NULL,                         /* tp_doc */
+  "BPF Program Wrapper",        /* tp_doc */
   0,                            /* tp_traverse */
   0,                            /* tp_clear */
   0,                            /* tp_richcompare */
@@ -93,7 +96,7 @@ PyTypeObject BPFProgramtype = {
   0,                            /* tp_dictoffset */
   0,                            /* tp_init */
   0,                            /* tp_alloc */
-  0,                            /* tp_new */
+  p_new_bpfobject               /* tp_new */
 #else
   PyObject_HEAD_INIT(NULL)
   0,
@@ -117,16 +120,39 @@ PyTypeObject BPFProgramtype = {
 PyObject*
 new_bpfobject(const struct bpf_program &bpfprog)
 {
-  if (PyType_Ready(&BPFProgramtype) < 0)
+  if (PyType_Ready(&BPFProgramType) < 0)
     return NULL;
 
   bpfobject *bpf;
-  bpf = PyObject_New(bpfobject, &BPFProgramtype);
+  bpf = PyObject_New(bpfobject, &BPFProgramType);
   if (bpf == NULL)
+  { 
+    PyErr_SetString(BPFError, "Failed to create object");
     return NULL;
+  }
 
   bpf->bpf = bpfprog;
   return (PyObject*)bpf;
+}
+
+
+static PyObject*
+p_new_bpfobject(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+  char *filter_string;
+  int linktype = 1;  // DLT_EN10MB
+  if (!PyArg_ParseTuple(args, "s|i", &filter_string, &linktype)){
+    return NULL;
+  }
+
+  struct bpf_program bpfprog;
+
+  if (pcap_compile_nopcap((1<<16), linktype, &bpfprog, filter_string, 0, 0)){
+    PyErr_SetString(BPFError, "Couldn't compile BPF program");
+    return NULL;
+  }
+
+  return new_bpfobject(bpfprog);
 }
 
 
@@ -137,13 +163,13 @@ p_filter(register bpfobject* bpf, PyObject* args)
   u_char* packet;
   unsigned int len;
 
-  if (Py_TYPE(bpf) != &BPFProgramtype)
+  if (Py_TYPE(bpf) != &BPFProgramType)
     {
-      PyErr_SetString(PcapError, "Not a bpfprogram object");
-	return NULL;
+      PyErr_SetString(BPFError, "Not a bpfprogram object");
+	    return NULL;
     }
 
-  if (!PyArg_ParseTuple(args,"s#:filter",&packet, &len))
+  if (!PyArg_ParseTuple(args,"y#:filter",&packet, &len))
     return NULL;
 
   status = bpf_filter(bpf->bpf.bf_insns,

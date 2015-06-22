@@ -13,6 +13,10 @@
 PyObject*
 new_bpfobject(const struct bpf_program &bpf);
 
+extern PyObject* BPFError;
+
+extern PyTypeObject BPFProgramType;
+
 extern PyTypeObject Pcaptype;
 
 #endif // __bpfobj__

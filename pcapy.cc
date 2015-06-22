@@ -229,6 +229,11 @@ initpcapy(void)
   m = Py_InitModule3("pcapy", pcap_methods, pcap_doc);
 #endif
 
+  if (PyType_Ready(&BPFProgramType) < 0) {
+    return NULL;
+  }
+
+  PyModule_AddObject(m, "BPFProgram", (PyObject *) &BPFProgramType);
 
   /* Direct from pcap's net/bpf.h. */
   PyModule_AddIntConstant(m, "DLT_NULL", 0);
@@ -250,8 +255,16 @@ initpcapy(void)
 
   d = PyModule_GetDict(m);
   PcapError = PyErr_NewException("pcapy.PcapError", NULL, NULL );
-  if( PcapError )
+  BPFError = PyErr_NewException("pcapy.BPFError", NULL, NULL );
+  if( PcapError ) 
+  {
     PyDict_SetItemString( d, "PcapError", PcapError );
+  }
+  
+  if ( BPFError )
+  {
+    PyDict_SetItemString( d, "BPFError", BPFError );
+  }
 #if PY_MAJOR_VERSION >= 3
   return m;
 #endif  //PY_MAJOR_VERSION >= 3

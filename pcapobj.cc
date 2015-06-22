@@ -239,42 +239,54 @@ p_setfilter(register pcapobject* pp, PyObject* args)
 static PyObject*
 p_next(register pcapobject* pp, PyObject*)
 {
-  struct pcap_pkthdr hdr;
+  struct pcap_pkthdr *hdr;
   const unsigned char *buf;
+  int err_code = 1;
 
   if (Py_TYPE(pp) != &Pcaptype)
-    {
-      PyErr_SetString(PcapError, "Not a pcap object");
-      return NULL;
-    }
+  {
+    PyErr_SetString(PcapError, "Not a pcap object");
+    return NULL;
+  }
 
   // allow threads as this might block
   Py_BEGIN_ALLOW_THREADS;
-  buf = pcap_next(pp->pcap, &hdr);
+  err_code = pcap_next_ex(pp->pcap, &hdr, &buf);
   Py_END_ALLOW_THREADS;
 
-  if(!buf)
-    {
-      // XXX: PcapError is a void string (aka nothing)
-      PyErr_SetString(PcapError, pcap_geterr(pp->pcap));
-      return NULL;
-    }
+  if(err_code == -1)
+  {
+    PyErr_SetString(PcapError, pcap_geterr(pp->pcap));
+    return NULL;
+  }
 
-  PyObject *pkthdr = new_pcap_pkthdr(&hdr);
-    if (pkthdr)
-    {
-        PyObject *ret = NULL;
 
-        #if PY_MAJOR_VERSION >= 3
-          /* return bytes */
-          ret = Py_BuildValue("(Oy#)", pkthdr, buf, hdr.caplen);
-        #else
-          ret = Py_BuildValue("(Os#)", pkthdr, buf, hdr.caplen);
-        #endif
+  PyObject *pkthdr;
+  int _caplen = 0;
+  if (err_code == 1) {
+    pkthdr = new_pcap_pkthdr(hdr);
+    _caplen = hdr->caplen;
+  } else {
+    pkthdr = Py_None;
+    Py_INCREF(pkthdr);
+    _caplen = 0;
+  }
+  
+ 
+  if (pkthdr)
+  {
+    PyObject *ret = NULL;
 
-        Py_DECREF(pkthdr);
-        return ret;
-    }
+    #if PY_MAJOR_VERSION >= 3
+      /* return bytes */
+      ret = Py_BuildValue("(Oy#)", pkthdr, buf, _caplen);
+    #else
+      ret = Py_BuildValue("(Os#)", pkthdr, buf, _caplen);
+    #endif
+
+    Py_DECREF(pkthdr);
+    return ret;
+  }
 
   PyErr_SetString(PcapError, "Can't build pkthdr");
   return NULL;
