@@ -45,9 +45,9 @@ def my_init_posix():
     compiler = g['LDSHARED'].split()[0]
     flags = g['LDSHARED'].split()[1:]
     if compiler == 'gcc':
-        g['LDSHARED'] = ' '.join(['g++'].extend(flags))
+        g['LDSHARED'] = ' '.join(['g++'] + flags)
     elif compiler == 'clang':
-        g['LDSHARED'] = ' '.join(['clang++'].extend(flags))
+        g['LDSHARED'] = ' '.join(['clang++'] + flags)
         print('my_init_posix: changing LDSHARED =',
               repr(g['LDSHARED']))
         print('to', repr(g['LDSHARED']))
