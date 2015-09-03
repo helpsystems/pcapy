@@ -146,8 +146,15 @@ p_dump(register pcapdumper* pp, PyObject* args)
 		return NULL;
 	}
 
-	if (!PyArg_ParseTuple(args,"Os#",&pyhdr,&data,&len))
+#if PY_MAJOR_VERSION >= 3
+	if (!PyArg_ParseTuple(args,"Oy#",&pyhdr,&data,&len)){
 		return NULL;
+  }
+#else
+  if (!PyArg_ParseTuple(args,"Os#",&pyhdr,&data,&len)){
+    return NULL;
+  }
+#endif
 
 	struct pcap_pkthdr hdr;
 	if (-1 == pkthdr_to_native(pyhdr, &hdr))
@@ -158,4 +165,3 @@ p_dump(register pcapdumper* pp, PyObject* args)
 	Py_INCREF(Py_None);
 	return Py_None;
 }
-/* vim: set tabstop=2 shiftwidth=2 expandtab: */

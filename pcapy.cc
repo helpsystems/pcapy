@@ -230,7 +230,11 @@ initpcapy(void)
 #endif
 
   if (PyType_Ready(&BPFProgramType) < 0) {
+    #if PY_MAJOR_VERSION >= 3
     return NULL;
+    #else
+    return;
+    #endif //PY_MAJOR_VERSION >= 3  
   }
 
   PyModule_AddObject(m, "BPFProgram", (PyObject *) &BPFProgramType);

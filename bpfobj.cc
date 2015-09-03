@@ -100,7 +100,7 @@ PyTypeObject BPFProgramType = {
 #else
   PyObject_HEAD_INIT(NULL)
   0,
-  "Bpf",
+  "BPFProgram",
   sizeof(bpfobject),
   0,
   /* methods */
@@ -108,11 +108,37 @@ PyTypeObject BPFProgramType = {
   0,                                /* tp_print*/
   (getattrfunc)bpfprog_getattr,     /* tp_getattr*/
   0,                                /* tp_setattr*/
-  0,                                /* tp_compare*/
-  0,                                /* tp_repr*/
-  0,                                /* tp_as_number*/
-  0,                                /* tp_as_sequence*/
-  0,                                /* tp_as_mapping*/
+  0,                                /*tp_compare*/
+  0,                                /*tp_repr*/
+  0,                                /*tp_as_number*/
+  0,                                /*tp_as_sequence*/
+  0,                                /*tp_as_mapping*/
+  0,                                /*tp_hash */
+  0,                                /*tp_call*/
+  0,                                /*tp_str*/
+  0,                                /*tp_getattro*/
+  0,                                /*tp_setattro*/
+  0,                                /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, 
+                                    /*tp_flags*/
+  "BPF Program Wrapper",            /* tp_doc */
+  0,                                /* tp_traverse */
+  0,                                /* tp_clear */
+  0,                                /* tp_richcompare */
+  0,                                /* tp_weaklistoffset */
+  0,                                /* tp_iter */
+  0,                                /* tp_iternext */
+  bpf_methods,                      /* tp_methods */
+  0,                                /* tp_members */
+  0,                                /* tp_getset */
+  0,                                /* tp_base */
+  0,                                /* tp_dict */
+  0,                                /* tp_descr_get */
+  0,                                /* tp_descr_set */
+  0,                                /* tp_dictoffset */
+  0,                                /* tp_init */
+  0,                                /* tp_alloc */
+  p_new_bpfobject                   /* tp_new */
 #endif
 };
 
@@ -169,8 +195,15 @@ p_filter(register bpfobject* bpf, PyObject* args)
 	    return NULL;
     }
 
-  if (!PyArg_ParseTuple(args,"y#:filter",&packet, &len))
+#if PY_MAJOR_VERSION >= 3
+  if (!PyArg_ParseTuple(args,"y#:filter",&packet, &len)){
     return NULL;
+  }
+#else
+  if (!PyArg_ParseTuple(args,"s#:filter",&packet, &len)){
+    return NULL;
+  }
+#endif
 
   status = bpf_filter(bpf->bpf.bf_insns,
 		      packet,
@@ -178,4 +211,3 @@ p_filter(register bpfobject* bpf, PyObject* args)
 
   return Py_BuildValue("i", status);
 }
-/* vim: set tabstop=2 shiftwidth=2 expandtab: */

@@ -8,11 +8,13 @@
 import pcapy
 import sys
 import unittest
+import os
 
 
 class TestPcapy(unittest.TestCase):
 
     _96PINGS = '96pings.pcap'
+    _IFACE = 'vboxnet0'
 
     def testPacketHeaderRefCount(self):
         """
@@ -22,8 +24,8 @@ class TestPcapy(unittest.TestCase):
         class _Simple:
             pass
 
-        # r = pcapy.open_live("en1", 65000, 0, 1000)
         r = pcapy.open_offline(TestPcapy._96PINGS)
+
         # get one & check its refcount
         self.assertEqual(
             sys.getrefcount(r.next()[0]),
@@ -33,10 +35,6 @@ class TestPcapy(unittest.TestCase):
         """
         #2 empty string is returned as packet body at end of file
         """
-        class _Simple:
-            pass
-
-        # r = pcapy.open_live("en1", 65000, 0, 1000)
 
         r = pcapy.open_offline(TestPcapy._96PINGS)
         # get one & check its refcount
@@ -48,7 +46,7 @@ class TestPcapy(unittest.TestCase):
             hdr, pkt = r.next()
             i += 1
         self.assertEqual(96, i)
-        self.assertIsNone(hdr, None)
+        self.assertTrue(hdr is None)
         self.assertEqual(pkt, b'')
         del hdr
         self.assertEqual(refNone, sys.getrefcount(None))
@@ -65,6 +63,71 @@ class TestPcapy(unittest.TestCase):
             f = bpf.filter(pkt)
             self.assertNotEqual(f, 0)
             hdr, pkt = r.next()
+
+    def _testLiveCapture(self):
+        """
+        #4 (disabled -- requires interface info) test live capture
+        """
+        r = pcapy.open_live(TestPcapy._IFACE, 60000, 1, 1500)
+        net = r.getnet()
+        self.assertEqual(net, '192.168.56.0')
+        hdr, body = r.next()
+        self.assertTrue(hdr is not None)
+
+    def _testSendPacket(self):
+        """
+        #5 (disabled -- requires interface info) test sendpacket
+        """
+        r = pcapy.open_offline(TestPcapy._96PINGS)
+        w = pcapy.open_live(TestPcapy._IFACE, 60000, 1, 1500)
+        # get one & check its refcount
+
+        i = 0
+        hdr, pkt = r.next()
+        while hdr is not None:
+            w.sendpacket(pkt)
+            hdr, pkt = r.next()
+            i += 1
+
+    def testPacketDumper(self):
+        """
+        #6 test that the dumper writes correct payload
+        """
+        try:
+            r = pcapy.open_offline(TestPcapy._96PINGS)
+            dumper = r.dump_open('tmp.pcap')
+
+            hdr, body = r.next()
+            i = 0
+            while hdr is not None:
+                dumper.dump(hdr, body)
+                i += 1
+                hdr, body = r.next()
+
+            # make sure file closes
+            del dumper
+
+            # check that the dumper wrote a legal pcap
+            # file with same packer data
+            r = pcapy.open_offline(TestPcapy._96PINGS)
+            r2 = pcapy.open_offline('tmp.pcap')
+
+            h1, b1 = r.next()
+            h2, b2 = r2.next()
+            while h1 is not None and h2 is not None:
+                self.assertEqual(b1, b2)
+                h1, b1 = r.next()
+                h2, b2 = r2.next()
+
+            self.assertTrue(h1 is None)
+            self.assertTrue(h2 is None)
+            os.unlink('tmp.pcap')
+        except Exception:
+            try:
+                os.unlink('tmp.pcap')
+            except Exception:
+                pass
+            raise  # bubble up exception so test fails
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestPcapy)
 unittest.TextTestRunner(verbosity=2).run(suite)

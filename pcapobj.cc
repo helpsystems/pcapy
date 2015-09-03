@@ -325,7 +325,13 @@ PythonCallBack(u_char *user,
 
   PyObject *hdr = new_pcap_pkthdr(header);
 
+#if PY_MAJOR_VERSION >= 3
+  /* pass bytes */
+  arglist = Py_BuildValue("Oy#", hdr, packetdata, *len);
+#else
   arglist = Py_BuildValue("Os#", hdr, packetdata, *len);
+#endif
+
   result = PyEval_CallObject(pctx->pyfunc,arglist);
 
   Py_XDECREF(arglist);
@@ -496,8 +502,17 @@ p_sendpacket(register pcapobject* pp, PyObject* args)
       return NULL;
     }
 
-  if (!PyArg_ParseTuple(args,"s#", &str, &length))
+#if PY_MAJOR_VERSION >= 3
+  /* accept bytes */
+  if (!PyArg_ParseTuple(args,"y#", &str, &length)) {
     return NULL;
+  }
+#else
+  if (!PyArg_ParseTuple(args,"s#", &str, &length)) {
+    return NULL;
+  }
+#endif
+    
 
   status = pcap_sendpacket(pp->pcap, str, length);
   if (status)
