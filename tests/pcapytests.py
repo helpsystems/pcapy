@@ -14,7 +14,7 @@ class TestPcapy(unittest.TestCase):
     def testPacketHeaderRefCount(self):
         """#1:when next() creates a pkthdr it make one extra reference"""
         class _Simple: pass
-        #r = pcapy.open_live("en1", 65000, 0, 1000)
+        #r = pcapy.open_live("en1", 65000, 0, 1000, 2)
         r = pcapy.open_offline(TestPcapy._96PINGS)
         #get one & check its refcount
         self.assertEqual( sys.getrefcount(r.next()[0]),
@@ -22,7 +22,7 @@ class TestPcapy(unittest.TestCase):
     def testEOFValue(self):
         """#1:when next() creates a pkthdr it make one extra reference"""
         class _Simple: pass
-        #r = pcapy.open_live("en1", 65000, 0, 1000)
+        #r = pcapy.open_live("en1", 65000, 0, 1000, 2)
         r = pcapy.open_offline(TestPcapy._96PINGS)
         #get one & check its refcount
         i=0

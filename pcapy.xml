@@ -53,6 +53,9 @@
             <paramdef>
               int <parameter>to_ms</parameter>
             </paramdef>
+            <paramdef choice="opt">
+              int <parameter>bufsize_mb</parameter>
+            </paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -84,6 +87,7 @@
           kernel in one operation. Not all platforms support a read
           timeout; on platforms that don't, the read timeout is
           ignored.
+          <parameter>bufsize_mb</parameter> specifies the buffersize in MB.
         </para>
       </refsect1>
     </refentry>
