@@ -79,12 +79,12 @@ open_live(PyObject *self, PyObject *args)
   int  snaplen;
   int  promisc;
   int  to_ms;
-  int  bufsize_mb;
+  int  bufsize_mb = 1;
   
   bpf_u_int32 net, mask;
   
   
-  if(!PyArg_ParseTuple(args,"siiii:open_live",&device,&snaplen,&promisc,&to_ms,&bufsize_mb))
+  if(!PyArg_ParseTuple(args,"siii|i:open_live",&device,&snaplen,&promisc,&to_ms,&bufsize_mb))
     return NULL;
   
   int status = pcap_lookupnet(device, &net, &mask, errbuff);

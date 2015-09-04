@@ -53,7 +53,7 @@
             <paramdef>
               int <parameter>to_ms</parameter>
             </paramdef>
-            <paramdef>
+            <paramdef choice="opt">
               int <parameter>bufsize_mb</parameter>
             </paramdef>
           </funcprototype>
