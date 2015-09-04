@@ -79,11 +79,12 @@ open_live(PyObject *self, PyObject *args)
   int  snaplen;
   int  promisc;
   int  to_ms;
+  int  bufsize_mb;
   
   bpf_u_int32 net, mask;
   
   
-  if(!PyArg_ParseTuple(args,"siii:open_live",&device,&snaplen,&promisc,&to_ms))
+  if(!PyArg_ParseTuple(args,"siiii:open_live",&device,&snaplen,&promisc,&to_ms,&bufsize_mb))
     return NULL;
   
   int status = pcap_lookupnet(device, &net, &mask, errbuff);
@@ -94,13 +95,44 @@ open_live(PyObject *self, PyObject *args)
     }
   
   pcap_t* pt;
-	
-  pt = pcap_open_live(device, snaplen, promisc!=0, to_ms, errbuff);
+
+  pt = pcap_create(device, errbuff);
   if(!pt)
     {
       PyErr_SetString(PcapError, errbuff);
       return NULL;
     }
+
+  if (pcap_set_snaplen(pt, snaplen))
+    {
+      PyErr_SetString(PcapError, errbuff);
+      return NULL;
+    }
+
+  if (pcap_set_promisc(pt, promisc!=0))
+    {
+      PyErr_SetString(PcapError, errbuff);
+      return NULL;
+    }
+
+  if (pcap_set_timeout(pt, to_ms))
+    {
+      PyErr_SetString(PcapError, errbuff);
+      return NULL;
+    }
+
+  if (pcap_set_buffer_size(pt, bufsize_mb * 1024 * 1024))
+    {
+      PyErr_SetString(PcapError, errbuff);
+      return NULL;
+    }
+
+  if (pcap_activate(pt))
+    {
+      PyErr_SetString(PcapError, errbuff);
+      return NULL;
+    }
+
 #ifdef WIN32
   pcap_setmintocopy(pt, 0);
 #endif
@@ -173,7 +205,7 @@ bpf_compile(PyObject* self, PyObject* args)
 
 
 static PyMethodDef pcap_methods[] = {
-  {"open_live", open_live, METH_VARARGS, "open_live(device, snaplen, promisc, to_ms) opens a pcap device"},
+  {"open_live", open_live, METH_VARARGS, "open_live(device, snaplen, promisc, to_ms, bufsize_mb) opens a pcap device"},
   {"open_offline", open_offline, METH_VARARGS, "open_offline(filename) opens a pcap formated file"},
   {"lookupdev", lookupdev, METH_VARARGS, "lookupdev() looks up a pcap device"},
   {"findalldevs", findalldevs, METH_VARARGS, "findalldevs() lists all available interfaces"},
