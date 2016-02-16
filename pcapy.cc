@@ -23,19 +23,19 @@ PyObject *PcapError;
 
 // module methods
 
-static PyObject* 
+static PyObject*
 lookupdev(PyObject* self, PyObject* args)
 {
   char errbuff[PCAP_ERRBUF_SIZE];
   char* dev;
-  
+
   dev = pcap_lookupdev(errbuff);
   if(!dev)
     {
       PyErr_SetString(PcapError, errbuff);
       return NULL;
     }
-  
+
   return Py_BuildValue("u", dev);
 }
 
@@ -67,7 +67,7 @@ findalldevs(PyObject *self, PyObject *args)
     }
 
   pcap_freealldevs(devs);
-  
+
   return list;
 }
 
@@ -79,22 +79,22 @@ open_live(PyObject *self, PyObject *args)
   int  snaplen;
   int  promisc;
   int  to_ms;
-  
+
   bpf_u_int32 net, mask;
-  
-  
+
+
   if(!PyArg_ParseTuple(args,"siii:open_live",&device,&snaplen,&promisc,&to_ms))
     return NULL;
-  
+
   int status = pcap_lookupnet(device, &net, &mask, errbuff);
   if(status)
     {
       net = 0;
       mask = 0;
     }
-  
+
   pcap_t* pt;
-	
+
   pt = pcap_open_live(device, snaplen, promisc!=0, to_ms, errbuff);
   if(!pt)
     {
@@ -113,13 +113,13 @@ open_offline(PyObject *self, PyObject *args)
 {
   char errbuff[PCAP_ERRBUF_SIZE];
   char * filename;
-  
-  
+
+
   if(!PyArg_ParseTuple(args,"s",&filename))
     return NULL;
-  
+
   pcap_t* pt;
-	
+
   pt = pcap_open_offline(filename, errbuff);
   if(!pt)
     {
@@ -142,8 +142,8 @@ bpf_compile(PyObject* self, PyObject* args)
   char *filter;
   int optimize;
   unsigned int netmask;
-  
-  if(!PyArg_ParseTuple(args, 
+
+  if(!PyArg_ParseTuple(args,
 		       "iisiI:compile",
 		       &linktype,
 		       &snaplen,
@@ -151,7 +151,7 @@ bpf_compile(PyObject* self, PyObject* args)
 		       &optimize,
 		       &netmask))
     return NULL;
-  
+
   pcap_t *pp;
 
   pp = pcap_open_dead(linktype, snaplen);
@@ -167,7 +167,7 @@ bpf_compile(PyObject* self, PyObject* args)
       PyErr_SetString(PcapError, pcap_geterr(pp));
       return NULL;
     }
-  
+
   return new_bpfobject( bpf );
 }
 
@@ -181,21 +181,63 @@ static PyMethodDef pcap_methods[] = {
   {NULL, NULL}
 };
 
+#if PY_MAJOR_VERSION >= 3
+PyDoc_STRVAR(pcap_doc,
+"A wrapper for the Packet Capture (PCAP) library");
+
+static struct PyModuleDef pcapy_module = {
+	PyModuleDef_HEAD_INIT,
+	"pcapy",      /* m_name */
+	pcap_doc,     /* m_doc */
+	-1,           /* m_size */
+	pcap_methods, /* m_methods */
+	NULL,         /* m_reload */
+	NULL,         /* m_traverse */
+	NULL,         /* m_clear */
+	NULL,         /* m_free */
+};
+#else
 
 static char *pcap_doc =
 "\nA wrapper for the Packet Capture (PCAP) library\n";
+#endif //PY_MAJOR_VERSION >= 3
 
 
+#if PY_MAJOR_VERSION >= 3
+PyMODINIT_FUNC
+PyInit_pcapy(void)
+#else
 void
 initpcapy(void)
+#endif //PY_MAJOR_VERSION >= 3
+
+
 {
   PyObject *m, *d;
 
-  Pcaptype.ob_type =  &PyType_Type;
+
+#if PY_MAJOR_VERSION < 3
+  Pcaptype.ob_type = &PyType_Type;
   Pkthdr_type.ob_type = &PyType_Type;
   Pdumpertype.ob_type = &PyType_Type;
+#endif
 
+
+#if PY_MAJOR_VERSION >= 3
+  m = PyModule_Create(&pcapy_module);
+#else
   m = Py_InitModule3("pcapy", pcap_methods, pcap_doc);
+#endif
+
+  if (PyType_Ready(&BPFProgramType) < 0) {
+    #if PY_MAJOR_VERSION >= 3
+    return NULL;
+    #else
+    return;
+    #endif //PY_MAJOR_VERSION >= 3  
+  }
+
+  PyModule_AddObject(m, "BPFProgram", (PyObject *) &BPFProgramType);
 
   /* Direct from pcap's net/bpf.h. */
   PyModule_AddIntConstant(m, "DLT_NULL", 0);
@@ -217,6 +259,18 @@ initpcapy(void)
 
   d = PyModule_GetDict(m);
   PcapError = PyErr_NewException("pcapy.PcapError", NULL, NULL );
-  if( PcapError )
+  BPFError = PyErr_NewException("pcapy.BPFError", NULL, NULL );
+  if( PcapError ) 
+  {
     PyDict_SetItemString( d, "PcapError", PcapError );
+  }
+  
+  if ( BPFError )
+  {
+    PyDict_SetItemString( d, "BPFError", BPFError );
+  }
+#if PY_MAJOR_VERSION >= 3
+  return m;
+#endif  //PY_MAJOR_VERSION >= 3
 }
+/* vim: set tabstop=2 shiftwidth=2 expandtab: */

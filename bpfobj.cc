@@ -32,9 +32,12 @@ bpfprog_dealloc(register bpfobject* bpf)
   PyObject_Del(bpf);
 }
 
+PyObject* BPFError;
+
 
 // BPFProgram methods
 static PyObject* p_filter(register bpfobject* bpf, PyObject* args);
+static PyObject* p_new_bpfobject(PyTypeObject *type, PyObject* args, PyObject *kwags);
 
 
 static PyMethodDef bpf_methods[] = {
@@ -45,58 +48,162 @@ static PyMethodDef bpf_methods[] = {
 static PyObject*
 bpfprog_getattr(bpfobject* pp, char* name)
 {
+#if PY_MAJOR_VERSION >= 3
+  PyObject *nameobj = PyUnicode_FromString(name);
+  return PyObject_GenericGetAttr((PyObject *)pp, nameobj);
+#else
   return Py_FindMethod(bpf_methods, (PyObject*)pp, name);
+#endif
 }
 
 
-PyTypeObject BPFProgramtype = {
+PyTypeObject BPFProgramType = {
+#if PY_MAJOR_VERSION >= 3
+	PyVarObject_HEAD_INIT(&PyType_Type, 0)
+  "BPFProgram",                 /* tp_name */
+  sizeof(bpfobject),            /* tp_basicsize */
+  0,                            /* tp_itemsize */
+  (destructor)bpfprog_dealloc,  /* tp_dealloc */
+  0,                            /* tp_print */
+  (getattrfunc)bpfprog_getattr, /* tp_getattr */
+  0,                            /* tp_setattr */
+  0,                            /* tp_reserved */
+  0,                            /* tp_repr */
+  0,                            /* tp_as_number */
+  0,                            /* tp_as_sequence */
+  0,                            /* tp_as_mapping */
+  0,                            /* tp_hash */
+  0,                            /* tp_call */
+  0,                            /* tp_str */
+  0,                            /* tp_getattro */
+  0,                            /* tp_setattro */
+  0,                            /* tp_as_buffer */
+  Py_TPFLAGS_DEFAULT,           /* tp_flags */
+  "BPF Program Wrapper",        /* tp_doc */
+  0,                            /* tp_traverse */
+  0,                            /* tp_clear */
+  0,                            /* tp_richcompare */
+  0,                            /* tp_weaklistoffset */
+  0,                            /* tp_iter */
+  0,                            /* tp_iternext */
+  bpf_methods,                  /* tp_methods */
+  0,                            /* tp_members */
+  0,                            /* tp_getset */
+  0,                            /* tp_base */
+  0,                            /* tp_dict */
+  0,                            /* tp_descr_get */
+  0,                            /* tp_descr_set */
+  0,                            /* tp_dictoffset */
+  0,                            /* tp_init */
+  0,                            /* tp_alloc */
+  p_new_bpfobject               /* tp_new */
+#else
   PyObject_HEAD_INIT(NULL)
   0,
-  "Bpf",
+  "BPFProgram",
   sizeof(bpfobject),
   0,
-  
   /* methods */
-  (destructor)bpfprog_dealloc,  /*tp_dealloc*/
-  0,			  /*tp_print*/
-  (getattrfunc)bpfprog_getattr, /*tp_getattr*/
-  0,			  /*tp_setattr*/
-  0,			  /*tp_compare*/
-  0,			  /*tp_repr*/
-  0,			  /*tp_as_number*/
-  0,			  /*tp_as_sequence*/
-  0,			  /*tp_as_mapping*/
+  (destructor)bpfprog_dealloc,      /* tp_dealloc*/
+  0,                                /* tp_print*/
+  (getattrfunc)bpfprog_getattr,     /* tp_getattr*/
+  0,                                /* tp_setattr*/
+  0,                                /*tp_compare*/
+  0,                                /*tp_repr*/
+  0,                                /*tp_as_number*/
+  0,                                /*tp_as_sequence*/
+  0,                                /*tp_as_mapping*/
+  0,                                /*tp_hash */
+  0,                                /*tp_call*/
+  0,                                /*tp_str*/
+  0,                                /*tp_getattro*/
+  0,                                /*tp_setattro*/
+  0,                                /*tp_as_buffer*/
+  Py_TPFLAGS_DEFAULT | Py_TPFLAGS_BASETYPE, 
+                                    /*tp_flags*/
+  "BPF Program Wrapper",            /* tp_doc */
+  0,                                /* tp_traverse */
+  0,                                /* tp_clear */
+  0,                                /* tp_richcompare */
+  0,                                /* tp_weaklistoffset */
+  0,                                /* tp_iter */
+  0,                                /* tp_iternext */
+  bpf_methods,                      /* tp_methods */
+  0,                                /* tp_members */
+  0,                                /* tp_getset */
+  0,                                /* tp_base */
+  0,                                /* tp_dict */
+  0,                                /* tp_descr_get */
+  0,                                /* tp_descr_set */
+  0,                                /* tp_dictoffset */
+  0,                                /* tp_init */
+  0,                                /* tp_alloc */
+  p_new_bpfobject                   /* tp_new */
+#endif
 };
 
 
 PyObject*
 new_bpfobject(const struct bpf_program &bpfprog)
 {
-  bpfobject *bpf;
-  bpf = PyObject_New(bpfobject, &BPFProgramtype);
-  if (bpf == NULL)
+  if (PyType_Ready(&BPFProgramType) < 0)
     return NULL;
-  
+
+  bpfobject *bpf;
+  bpf = PyObject_New(bpfobject, &BPFProgramType);
+  if (bpf == NULL)
+  { 
+    PyErr_SetString(BPFError, "Failed to create object");
+    return NULL;
+  }
+
   bpf->bpf = bpfprog;
   return (PyObject*)bpf;
 }
 
 
-static PyObject* 
+static PyObject*
+p_new_bpfobject(PyTypeObject *type, PyObject *args, PyObject *kwds)
+{
+  char *filter_string;
+  int linktype = 1;  // DLT_EN10MB
+  if (!PyArg_ParseTuple(args, "s|i", &filter_string, &linktype)){
+    return NULL;
+  }
+
+  struct bpf_program bpfprog;
+
+  if (pcap_compile_nopcap((1<<16), linktype, &bpfprog, filter_string, 0, 0)){
+    PyErr_SetString(BPFError, "Couldn't compile BPF program");
+    return NULL;
+  }
+
+  return new_bpfobject(bpfprog);
+}
+
+
+static PyObject*
 p_filter(register bpfobject* bpf, PyObject* args)
 {
   int status;
   u_char* packet;
   unsigned int len;
 
-  if (bpf->ob_type != &BPFProgramtype)
+  if (Py_TYPE(bpf) != &BPFProgramType)
     {
-      PyErr_SetString(PcapError, "Not a bpfprogram object");
-	return NULL;
+      PyErr_SetString(BPFError, "Not a bpfprogram object");
+	    return NULL;
     }
 
-  if (!PyArg_ParseTuple(args,"s#:filter",&packet, &len))
+#if PY_MAJOR_VERSION >= 3
+  if (!PyArg_ParseTuple(args,"y#:filter",&packet, &len)){
     return NULL;
+  }
+#else
+  if (!PyArg_ParseTuple(args,"s#:filter",&packet, &len)){
+    return NULL;
+  }
+#endif
 
   status = bpf_filter(bpf->bpf.bf_insns,
 		      packet,
