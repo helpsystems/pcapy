@@ -3,7 +3,7 @@ function InstallPackage ($python_home, $pkg) {
     & $pip_path install $pkg
 }
 
-function DownloadPrebuilt () {
+function DownloadWinpcapDev () {
     $webclient = New-Object System.Net.WebClient
 
     $download_url = "https://www.winpcap.org/install/bin/WpdPack_4_1_2.zip"
