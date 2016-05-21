@@ -10,7 +10,7 @@ function DownloadWinpcapDev () {
     $filename = "WpdPack_4_1_2.zip"
     
     $basedir = $pwd.Path + "\"
-    $filepath = $basedir + $prebuilt_zip
+    $filepath = $basedir + $filename
     if (Test-Path $filepath) {
         Write-Host "Reusing" $filepath
         return $filepath
