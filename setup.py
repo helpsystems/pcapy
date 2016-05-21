@@ -12,10 +12,18 @@ library_dirs = []
 libraries = []
 
 if sys.platform == 'win32':
-    # WinPcap include files
-    include_dirs.append(r'c:\devel\oss\wpdpack\Include')
-    # WinPcap library files
-    library_dirs.append(r'c:\devel\oss\wpdpack\Lib')
+    if os.environ.get('WPDPACK_BASE'):
+        wpdpack = os.environ['WPDPACK_BASE']
+        include_dirs.append(os.path.join(wpdpack, 'Include'))
+        if sys.maxsize > 2**32:  # x64 Python interpreter
+            library_dirs.append(os.path.join(wpdpack, 'Lib', 'x64'))
+        else:  # x86 Python interpreter
+            library_dirs.append(os.path.join(wpdpack, 'Lib'))
+    else:
+        # WinPcap include files
+        include_dirs.append(r'c:\devel\oss\wpdpack\Include')
+        # WinPcap library files
+        library_dirs.append(r'c:\devel\oss\wpdpack\Lib')
     libraries = ['wpcap', 'packet', 'ws2_32']
 else:
     libraries = ['pcap', 'stdc++']
