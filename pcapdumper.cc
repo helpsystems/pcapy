@@ -176,7 +176,7 @@ p_dump(register pcapdumper* pp, PyObject* args)
 static PyObject*
 p_close(register pcapdumper* pp, PyObject* args)
 {
-  if (pp->ob_type != &Pdumpertype) {
+  if (Py_TYPE(pp) != &Pdumpertype) {
     PyErr_SetString(PcapError, "Not a pcapdumper object");
     return NULL;
   }
