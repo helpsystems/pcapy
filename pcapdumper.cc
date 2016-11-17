@@ -36,12 +36,12 @@ pcap_dealloc(register pcapdumper* pp)
 
 
 // pcap methods
-//static PyObject* p_close(register pcapdumper* pp, PyObject* args);
+static PyObject* p_close(register pcapdumper* pp, PyObject* args);
 static PyObject* p_dump(register pcapdumper* pp, PyObject* args);
 
 
 static PyMethodDef p_methods[] = {
-//  {"close", (PyCFunction) p_close, METH_VARARGS, "loops packet dispatching"},
+  {"close", (PyCFunction) p_close, METH_VARARGS, "loops packet dispatching"},
   {"dump", (PyCFunction) p_dump, METH_VARARGS, "dump a packet to the file"},
   {NULL, NULL}	/* sentinel */
 };
@@ -160,8 +160,33 @@ p_dump(register pcapdumper* pp, PyObject* args)
 	if (-1 == pkthdr_to_native(pyhdr, &hdr))
 		return NULL;
 
+  if (pp->dumper == NULL){
+    PyErr_SetString(PcapError, "Dumper is already closed.");
+    return NULL;
+  }
+
 	pcap_dump((u_char *)pp->dumper, &hdr, data);
 
 	Py_INCREF(Py_None);
 	return Py_None;
+}
+
+// PdumperClose
+
+static PyObject*
+p_close(register pcapdumper* pp, PyObject* args)
+{
+  if (pp->ob_type != &Pdumpertype) {
+    PyErr_SetString(PcapError, "Not a pcapdumper object");
+    return NULL;
+  }
+
+  if ( pp->dumper )
+    pcap_dump_close(pp->dumper);
+
+  pp->dumper = NULL;
+
+  Py_INCREF(Py_None);
+  return Py_None;
+
 }
