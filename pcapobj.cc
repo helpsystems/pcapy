@@ -239,8 +239,8 @@ p_setfilter(register pcapobject* pp, PyObject* args)
 static PyObject*
 p_next(register pcapobject* pp, PyObject*)
 {
-  struct pcap_pkthdr *hdr;
-  const unsigned char *buf;
+  struct pcap_pkthdr *hdr = NULL;
+  const unsigned char *buf = (const unsigned char*)"";
   int err_code = 1;
 
   if (Py_TYPE(pp) != &Pcaptype)
