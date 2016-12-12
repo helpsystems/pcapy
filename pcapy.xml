@@ -6,7 +6,7 @@
 <part>
   <partinfo>
     <copyright>
-      <year>2015</year>
+      <year>2016</year>
       <holder>&corest;</holder>
     </copyright>
     <corpauthor>&corest;</corpauthor>
@@ -952,7 +952,6 @@
           Dump a packet to a <glossterm>savefile</glossterm>
         </refpurpose>
       </refnamediv>
-
       <refsynopsisdiv>
         <funcsynopsis>
           <funcprototype>
@@ -977,6 +976,30 @@
           <classname>Reader</classname>.
         </para>
       </refsect1>
+    </refentry>
+    <refentry>
+        <refnamediv>
+            <refname>close</refname>
+            <refpurpose>
+                Close a Dumper
+            </refpurpose>
+        </refnamediv>
+        <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>
+                  Dumper <function>close</function>
+                </funcdef>
+                <void/>
+              </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+        <refsect1>
+            <title>DESCRIPTION</title>
+            <para>
+              <function>close</function> closes a <classname>Dumper</classname>.
+            </para>
+        </refsect1>
     </refentry>
   </reference>
 
