@@ -20,6 +20,7 @@ typedef struct {
 	pcap_dumper_t *dumper;
 } pcapdumper;
 
+static bool validate_pcapdumper(register const pcapdumper* pp);
 
 // Pdumpertype
 
@@ -141,29 +142,28 @@ p_dump(register pcapdumper* pp, PyObject* args)
 	u_char *data;
 	int       len;
 
-	if (Py_TYPE(pp) != &Pdumpertype) {
-		PyErr_SetString(PcapError, "Not a pcapdumper object");
-		return NULL;
-	}
+	if(validate_pcapdumper(pp) == false){
+        return NULL;  
+    }
 
 #if PY_MAJOR_VERSION >= 3
 	if (!PyArg_ParseTuple(args,"Oy#",&pyhdr,&data,&len)){
 		return NULL;
-  }
+    }
 #else
-  if (!PyArg_ParseTuple(args,"Os#",&pyhdr,&data,&len)){
-    return NULL;
-  }
+    if (!PyArg_ParseTuple(args,"Os#",&pyhdr,&data,&len)){
+        return NULL;
+    }
 #endif
 
 	struct pcap_pkthdr hdr;
 	if (-1 == pkthdr_to_native(pyhdr, &hdr))
 		return NULL;
 
-  if (pp->dumper == NULL){
-    PyErr_SetString(PcapError, "Dumper is already closed.");
-    return NULL;
-  }
+    if (pp->dumper == NULL){
+        PyErr_SetString(PcapError, "Dumper is already closed.");
+        return NULL;
+    }
 
 	pcap_dump((u_char *)pp->dumper, &hdr, data);
 
@@ -176,17 +176,24 @@ p_dump(register pcapdumper* pp, PyObject* args)
 static PyObject*
 p_close(register pcapdumper* pp, PyObject* args)
 {
-  if (Py_TYPE(pp) != &Pdumpertype) {
-    PyErr_SetString(PcapError, "Not a pcapdumper object");
-    return NULL;
-  }
+    if(validate_pcapdumper(pp) == false){
+        return NULL;  
+    }
 
-  if ( pp->dumper )
-    pcap_dump_close(pp->dumper);
+    if ( pp->dumper )
+        pcap_dump_close(pp->dumper);
 
-  pp->dumper = NULL;
+    pp->dumper = NULL;
 
-  Py_INCREF(Py_None);
-  return Py_None;
+    Py_INCREF(Py_None);
+    return Py_None;
+}
 
+static bool
+validate_pcapdumper(register const pcapdumper* pp){
+    if (pp == NULL || Py_TYPE(pp) != &Pdumpertype) {
+        PyErr_SetString(PcapError, "Not a pcapdumper object");
+        return false;
+    }
+    return true;
 }
