@@ -79,15 +79,14 @@ open_live(PyObject *self, PyObject *args)
   int  snaplen;
   int  promisc;
   int  to_ms;
-  int buffer;
 
   bpf_u_int32 net, mask;
-  int status;
 
-  if(!PyArg_ParseTuple(args,"siii|i:open_live",&device,&snaplen,&promisc,&to_ms,&buffer))
+
+  if(!PyArg_ParseTuple(args,"siii:open_live",&device,&snaplen,&promisc,&to_ms))
     return NULL;
 
-  status = pcap_lookupnet(device, &net, &mask, errbuff);
+  int status = pcap_lookupnet(device, &net, &mask, errbuff);
   if(status)
     {
       net = 0;
@@ -96,30 +95,12 @@ open_live(PyObject *self, PyObject *args)
 
   pcap_t* pt;
 
-  pt = pcap_create(device, errbuff);
+  pt = pcap_open_live(device, snaplen, promisc!=0, to_ms, errbuff);
   if(!pt)
     {
       PyErr_SetString(PcapError, errbuff);
       return NULL;
     }
-
-  pcap_set_snaplen(pt, snaplen);
-  pcap_set_promisc(pt, promisc!=0);
-  pcap_set_timeout(pt, to_ms);
-
-  if(!buffer)
-    {
-      buffer = 0; // sets to libpcap default
-    }
-  pcap_set_buffer_size(pt, buffer);
-
-  status = pcap_activate(pt);
-  if(status)
-    {
-      PyErr_SetString(PcapError, "Failed to activate");
-      return NULL;
-    }
-
 #ifdef WIN32
   pcap_setmintocopy(pt, 0);
 #endif
@@ -192,7 +173,7 @@ bpf_compile(PyObject* self, PyObject* args)
 
 
 static PyMethodDef pcap_methods[] = {
-  {"open_live", open_live, METH_VARARGS, "open_live(device, snaplen, promisc, to_ms, buffer) opens a pcap device"},
+  {"open_live", open_live, METH_VARARGS, "open_live(device, snaplen, promisc, to_ms) opens a pcap device"},
   {"open_offline", open_offline, METH_VARARGS, "open_offline(filename) opens a pcap formated file"},
   {"lookupdev", lookupdev, METH_VARARGS, "lookupdev() looks up a pcap device"},
   {"findalldevs", findalldevs, METH_VARARGS, "findalldevs() lists all available interfaces"},

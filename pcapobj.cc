@@ -57,7 +57,6 @@ static PyObject* p_setnonblock(register pcapobject* pp, PyObject* args);
 static PyObject* p_getnonblock(register pcapobject* pp, PyObject* args);
 static PyObject* p_dump_open(register pcapobject* pp, PyObject* args);
 static PyObject* p_sendpacket(register pcapobject* pp, PyObject* args);
-static PyObject* p_stats( register pcapobject* pp, PyObject*);
 
 static PyMethodDef p_methods[] = {
   {"loop", (PyCFunction) p_loop, METH_VARARGS, "loops packet dispatching"},
@@ -71,7 +70,6 @@ static PyMethodDef p_methods[] = {
   {"setnonblock", (PyCFunction) p_setnonblock, METH_VARARGS, "puts into `non-blocking' mode, or take it out, depending on the argument"},
   {"dump_open", (PyCFunction) p_dump_open, METH_VARARGS, "creates a dumper object"},
   {"sendpacket", (PyCFunction) p_sendpacket, METH_VARARGS, "sends a packet through the interface"},
-  {"stats", (PyCFunction) p_stats, METH_NOARGS, "returns capture statistics"},
   {NULL, NULL}	/* sentinel */
 };
 
@@ -376,25 +374,6 @@ p_dispatch(register pcapobject* pp, PyObject* args)
   }
 
   return Py_BuildValue("i", ret);
-}
-
-static PyObject*
-p_stats(register pcapobject* pp, PyObject*)
-{
-  if (Py_TYPE(pp) != &Pcaptype)
-     {
-	   PyErr_SetString(PcapError, "Not a pcap object");
-	   return NULL;
-	 }
-
-  struct pcap_stat stats;
-
-  if (-1 == pcap_stats(pp->pcap, &stats)) {
-     PyErr_SetString(PcapError, pcap_geterr(pp->pcap));
-	 return NULL;
-  }
-
-	return Py_BuildValue("III", stats.ps_recv, stats.ps_drop, stats.ps_ifdrop);
 }
 
 static PyObject*
