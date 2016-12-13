@@ -1,21 +1,21 @@
-<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Part I. Pcapy Reference</title><meta name="generator" content="DocBook XSL Stylesheets V1.79.2"><meta name="keywords" content="pcap, packet, capture, python"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="part"><div class="titlepage"><div><div><h1 class="title"><a name="idp8772478384"></a>Part I. Pcapy Reference</h1></div><div><h3 class="corpauthor">CORE SECURITY TECHNOLOGIES</h3></div><div><p class="copyright">Copyright © 2016 CORE SECURITY TECHNOLOGIES</p></div><div><div class="revhistory"><table style="border-style:solid; width:100%;" summary="Revision History"><tr><th align="left" valign="top" colspan="3"><b>Revision History</b></th></tr><tr><td align="left">Revision Revision: 15</td><td align="left">Date: 2003-10-23</td><td align="left">Author: jkohen</td></tr><tr><td align="left" colspan="3">Initial revision</td></tr></table></div></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="reference"><a href="#idp8772543552">I. Pcapy Module Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8772545328">open_live</a></span><span class="refpurpose"> &#8212; Obtain a packet capture descriptor to look at packets on the network</span></dt><dt><span class="refentrytitle"><a href="#idp8772579680">open_offline</a></span><span class="refpurpose"> &#8212; 
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=ISO-8859-1"><title>Part I. Pcapy Reference</title><meta name="generator" content="DocBook XSL Stylesheets V1.79.2"><meta name="keywords" content="pcap, packet, capture, python"></head><body bgcolor="white" text="black" link="#0000FF" vlink="#840084" alink="#0000FF"><div class="part"><div class="titlepage"><div><div><h1 class="title"><a name="idp8777120288"></a>Part I. Pcapy Reference</h1></div><div><h3 class="corpauthor">CORE SECURITY TECHNOLOGIES</h3></div><div><p class="copyright">Copyright © 2016 CORE SECURITY TECHNOLOGIES</p></div><div><div class="revhistory"><table style="border-style:solid; width:100%;" summary="Revision History"><tr><th align="left" valign="top" colspan="3"><b>Revision History</b></th></tr><tr><td align="left">Revision Revision: 15</td><td align="left">Date: 2003-10-23</td><td align="left">Author: jkohen</td></tr><tr><td align="left" colspan="3">Initial revision</td></tr></table></div></div></div></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="reference"><a href="#idp8777481392">I. Pcapy Module Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8777482208">open_live</a></span><span class="refpurpose"> &#8212; Obtain a packet capture descriptor to look at packets on the network</span></dt><dt><span class="refentrytitle"><a href="#idp8777498608">open_offline</a></span><span class="refpurpose"> &#8212; 
           Obtain a packet capture descriptor to look at packets on a <em class="glossterm">savefile</em>
-        </span></dt><dt><span class="refentrytitle"><a href="#idp8772603328">lookupdev</a></span><span class="refpurpose"> &#8212; 
+        </span></dt><dt><span class="refentrytitle"><a href="#idp8777510640">lookupdev</a></span><span class="refpurpose"> &#8212; 
           Return a network device suitable for use with
           <code class="function">open_live</code>
-        </span></dt><dt><span class="refentrytitle"><a href="#idp8772617184">findalldevs</a></span><span class="refpurpose"> &#8212; Obtain the list of available network devices</span></dt><dt><span class="refentrytitle"><a href="#idp8772631392">compile</a></span><span class="refpurpose"> &#8212; Compile a BPF filter</span></dt></dl></dd><dt><span class="reference"><a href="#idp8772531584">II. Reader Object Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8772639152">dispatch</a></span><span class="refpurpose"> &#8212; Collect and process packets</span></dt><dt><span class="refentrytitle"><a href="#idp8772635744">next</a></span><span class="refpurpose"> &#8212; Collect the next packet</span></dt><dt><span class="refentrytitle"><a href="#idp8772485808">setfilter</a></span><span class="refpurpose"> &#8212; Specify a filter</span></dt><dt><span class="refentrytitle"><a href="#idp8772493728">getnet</a></span><span class="refpurpose"> &#8212; Get the associated network number and mask</span></dt><dt><span class="refentrytitle"><a href="#idp8772504720">datalink</a></span><span class="refpurpose"> &#8212; Obtain the link layer type</span></dt><dt><span class="refentrytitle"><a href="#idp8775771568">getnonblock</a></span><span class="refpurpose"> &#8212; 
+        </span></dt><dt><span class="refentrytitle"><a href="#idp8777517616">findalldevs</a></span><span class="refpurpose"> &#8212; Obtain the list of available network devices</span></dt><dt><span class="refentrytitle"><a href="#idp8777524992">compile</a></span><span class="refpurpose"> &#8212; Compile a BPF filter</span></dt></dl></dd><dt><span class="reference"><a href="#idp8777538096">II. Reader Object Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8777538912">dispatch</a></span><span class="refpurpose"> &#8212; Collect and process packets</span></dt><dt><span class="refentrytitle"><a href="#idp8777567120">next</a></span><span class="refpurpose"> &#8212; Collect the next packet</span></dt><dt><span class="refentrytitle"><a href="#idp8777576544">stats</a></span><span class="refpurpose"> &#8212; get capture statistics</span></dt><dt><span class="refentrytitle"><a href="#idp8777582384">setfilter</a></span><span class="refpurpose"> &#8212; Specify a filter</span></dt><dt><span class="refentrytitle"><a href="#idp8777588864">getnet</a></span><span class="refpurpose"> &#8212; Get the associated network number and mask</span></dt><dt><span class="refentrytitle"><a href="#idp8777598240">datalink</a></span><span class="refpurpose"> &#8212; Obtain the link layer type</span></dt><dt><span class="refentrytitle"><a href="#idp8777703632">getnonblock</a></span><span class="refpurpose"> &#8212; 
           Manipulate the
           <em class="firstterm">non-blocking</em> flag
-        </span></dt><dt><span class="refentrytitle"><a href="#idp8775787696">dump_open</a></span><span class="refpurpose"> &#8212; Create a Dumper object</span></dt></dl></dd><dt><span class="reference"><a href="#idp8775797104">III. Dumper Object Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8775797744">dump</a></span><span class="refpurpose"> &#8212; 
+        </span></dt><dt><span class="refentrytitle"><a href="#idp8777722160">dump_open</a></span><span class="refpurpose"> &#8212; Create a Dumper object</span></dt></dl></dd><dt><span class="reference"><a href="#idp8777733408">III. Dumper Object Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8777734240">dump</a></span><span class="refpurpose"> &#8212; 
           Dump a packet to a <em class="glossterm">savefile</em>
-        </span></dt><dt><span class="refentrytitle"><a href="#idp8775807008">close</a></span><span class="refpurpose"> &#8212; 
+        </span></dt><dt><span class="refentrytitle"><a href="#idp8777745424">close</a></span><span class="refpurpose"> &#8212; 
                 Close a Dumper
-            </span></dt></dl></dd><dt><span class="reference"><a href="#idp8775813248">IV. Pkthdr Object Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8775813888">getts</a></span><span class="refpurpose"> &#8212; Obtain packet header information</span></dt></dl></dd><dt><span class="reference"><a href="#idp8775826912">V. Bpf Object Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8775827552">filter</a></span><span class="refpurpose"> &#8212; Test a packet against a compiled filter</span></dt></dl></dd><dt><span class="bibliography"><a href="#idp8775836608">Bibliography</a></span></dt></dl></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8772543552"></a>Pcapy Module Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8772545328">open_live</a></span><span class="refpurpose"> &#8212; Obtain a packet capture descriptor to look at packets on the network</span></dt><dt><span class="refentrytitle"><a href="#idp8772579680">open_offline</a></span><span class="refpurpose"> &#8212; 
+            </span></dt></dl></dd><dt><span class="reference"><a href="#idp8777752672">IV. Pkthdr Object Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8777753312">getts</a></span><span class="refpurpose"> &#8212; Obtain packet header information</span></dt></dl></dd><dt><span class="reference"><a href="#idp8777768608">V. Bpf Object Reference</a></span></dt><dd><dl><dt><span class="refentrytitle"><a href="#idp8777769344">filter</a></span><span class="refpurpose"> &#8212; Test a packet against a compiled filter</span></dt></dl></dd><dt><span class="bibliography"><a href="#idp8777780064">Bibliography</a></span></dt></dl></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8777481392"></a>Pcapy Module Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8777482208">open_live</a></span><span class="refpurpose"> &#8212; Obtain a packet capture descriptor to look at packets on the network</span></dt><dt><span class="refentrytitle"><a href="#idp8777498608">open_offline</a></span><span class="refpurpose"> &#8212; 
           Obtain a packet capture descriptor to look at packets on a <em class="glossterm">savefile</em>
-        </span></dt><dt><span class="refentrytitle"><a href="#idp8772603328">lookupdev</a></span><span class="refpurpose"> &#8212; 
+        </span></dt><dt><span class="refentrytitle"><a href="#idp8777510640">lookupdev</a></span><span class="refpurpose"> &#8212; 
           Return a network device suitable for use with
           <code class="function">open_live</code>
-        </span></dt><dt><span class="refentrytitle"><a href="#idp8772617184">findalldevs</a></span><span class="refpurpose"> &#8212; Obtain the list of available network devices</span></dt><dt><span class="refentrytitle"><a href="#idp8772631392">compile</a></span><span class="refpurpose"> &#8212; Compile a BPF filter</span></dt></dl></div><div class="refentry"><a name="idp8772545328"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>open_live &#8212; Obtain a packet capture descriptor to look at packets on the network</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+        </span></dt><dt><span class="refentrytitle"><a href="#idp8777517616">findalldevs</a></span><span class="refpurpose"> &#8212; Obtain the list of available network devices</span></dt><dt><span class="refentrytitle"><a href="#idp8777524992">compile</a></span><span class="refpurpose"> &#8212; Compile a BPF filter</span></dt></dl></div><div class="refentry"><a name="idp8777482208"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>open_live &#8212; Obtain a packet capture descriptor to look at packets on the network</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               Reader <b class="fsfunc">open_live</b>
             (</code></td><td><var class="pdparam">device</var>, </td><td> </td></tr><tr><td> </td><td><var class="pdparam">snaplen</var>, </td><td> </td></tr><tr><td> </td><td><var class="pdparam">promisc</var>, </td><td> </td></tr><tr><td> </td><td><var class="pdparam">to_ms</var><code>)</code>;</td><td> </td></tr></table><div class="paramdef-list"><code>
               string <var class="pdparam">device</var>
@@ -25,7 +25,7 @@
               int <var class="pdparam">promisc</var>
             </code>;<br><code>
               int <var class="pdparam">to_ms</var>
-            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772562800"></a><h2>DESCRIPTION</h2>
+            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777489952"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">open_live</code> is used to obtain a packet
@@ -53,13 +53,13 @@
           timeout; on platforms that don't, the read timeout is
           ignored.
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8772579680"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>open_offline &#8212; 
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777498608"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>open_offline &#8212; 
           Obtain a packet capture descriptor to look at packets on a <em class="glossterm">savefile</em>
         </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               Reader <b class="fsfunc">open_offline</b>
             (</code></td><td><var class="pdparam">filename</var><code>)</code>;</td><td> </td></tr></table><div class="paramdef-list"><code>
               string <var class="pdparam">filename</var>
-            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772589696"></a><h2>DESCRIPTION</h2>
+            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777503760"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">open_offline</code> is called to open a
@@ -71,20 +71,20 @@
           <code class="filename">-</code> is a synonym for
           <code class="filename">stdin</code>.
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8772603328"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>lookupdev &#8212; 
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777510640"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>lookupdev &#8212; 
           Return a network device suitable for use with
           <code class="function">open_live</code>
         </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               string <b class="fsfunc">lookupdev</b>
-            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772612064"></a><h2>DESCRIPTION</h2>
+            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777515088"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">lookupdev</code> returns the name of a network
           device suitable for use with <code class="function">open_live</code>.
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8772617184"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>findalldevs &#8212; Obtain the list of available network devices</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777517616"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>findalldevs &#8212; Obtain the list of available network devices</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               string[] <b class="fsfunc">findalldevs</b>
-            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772624560"></a><h2>DESCRIPTION</h2>
+            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777521520"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">findalldevs</code> constructs a list of
@@ -96,7 +96,7 @@
           for capturing; if so, those devices will not appear on the
           list.)
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8772631392"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>compile &#8212; Compile a BPF filter</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777524992"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>compile &#8212; Compile a BPF filter</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               Bpf <b class="fsfunc">compile</b>
             (</code></td><td><var class="pdparam">linktype</var>, </td><td> </td></tr><tr><td> </td><td><var class="pdparam">snaplen</var>, </td><td> </td></tr><tr><td> </td><td><var class="pdparam">filter</var>, </td><td> </td></tr><tr><td> </td><td><var class="pdparam">optimize</var>, </td><td> </td></tr><tr><td> </td><td><var class="pdparam">netmask</var><code>)</code>;</td><td> </td></tr></table><div class="paramdef-list"><code>
               int <var class="pdparam">linktype</var>
@@ -108,7 +108,7 @@
               int <var class="pdparam">optimize</var>
             </code>;<br><code>
               int32 <var class="pdparam">netmask</var>
-            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772649280"></a><h2>DESCRIPTION</h2>
+            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777533648"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">compile</code> is used to compile the
@@ -119,10 +119,10 @@
           <em class="parameter"><code>netmask</code></em> specifies the netmask of the
           local network.
         </p>
-      </div></div></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8772531584"></a>Reader Object Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8772639152">dispatch</a></span><span class="refpurpose"> &#8212; Collect and process packets</span></dt><dt><span class="refentrytitle"><a href="#idp8772635744">next</a></span><span class="refpurpose"> &#8212; Collect the next packet</span></dt><dt><span class="refentrytitle"><a href="#idp8772485808">setfilter</a></span><span class="refpurpose"> &#8212; Specify a filter</span></dt><dt><span class="refentrytitle"><a href="#idp8772493728">getnet</a></span><span class="refpurpose"> &#8212; Get the associated network number and mask</span></dt><dt><span class="refentrytitle"><a href="#idp8772504720">datalink</a></span><span class="refpurpose"> &#8212; Obtain the link layer type</span></dt><dt><span class="refentrytitle"><a href="#idp8775771568">getnonblock</a></span><span class="refpurpose"> &#8212; 
+      </div></div></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8777538096"></a>Reader Object Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8777538912">dispatch</a></span><span class="refpurpose"> &#8212; Collect and process packets</span></dt><dt><span class="refentrytitle"><a href="#idp8777567120">next</a></span><span class="refpurpose"> &#8212; Collect the next packet</span></dt><dt><span class="refentrytitle"><a href="#idp8777576544">stats</a></span><span class="refpurpose"> &#8212; get capture statistics</span></dt><dt><span class="refentrytitle"><a href="#idp8777582384">setfilter</a></span><span class="refpurpose"> &#8212; Specify a filter</span></dt><dt><span class="refentrytitle"><a href="#idp8777588864">getnet</a></span><span class="refpurpose"> &#8212; Get the associated network number and mask</span></dt><dt><span class="refentrytitle"><a href="#idp8777598240">datalink</a></span><span class="refpurpose"> &#8212; Obtain the link layer type</span></dt><dt><span class="refentrytitle"><a href="#idp8777703632">getnonblock</a></span><span class="refpurpose"> &#8212; 
           Manipulate the
           <em class="firstterm">non-blocking</em> flag
-        </span></dt><dt><span class="refentrytitle"><a href="#idp8775787696">dump_open</a></span><span class="refpurpose"> &#8212; Create a Dumper object</span></dt></dl></div><div class="refentry"><a name="idp8772639152"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>dispatch, loop &#8212; Collect and process packets</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+        </span></dt><dt><span class="refentrytitle"><a href="#idp8777722160">dump_open</a></span><span class="refpurpose"> &#8212; Create a Dumper object</span></dt></dl></div><div class="refentry"><a name="idp8777538912"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>dispatch, loop &#8212; Collect and process packets</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               int <b class="fsfunc">dispatch</b>
             (</code></td><td><var class="pdparam">maxcant</var>, </td><td> </td></tr><tr><td> </td><td><var class="pdparam">(* callback)</var><code>)</code>;</td><td> </td></tr></table><div class="paramdef-list"><code>
               int <var class="pdparam">maxcant</var>
@@ -136,7 +136,7 @@
             </code>;<br><code>
               void <var class="pdparam">(* callback)</var>
               <code>(</code>Pkthdr, string<code>)</code>
-            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772592608"></a><h2>DESCRIPTION</h2>
+            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777549568"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">dispatch</code> is used to collect and process
@@ -191,9 +191,9 @@
           an error occurs). <span class="returnvalue">0</span> is returned
           if <em class="parameter"><code>maxcant</code></em> is exhausted.
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8772635744"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>next &#8212; Collect the next packet</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777567120"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>next &#8212; Collect the next packet</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               (Pkthdr, string) <b class="fsfunc">next</b>
-            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772479664"></a><h2>DESCRIPTION</h2>
+            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777571328"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">next</code> reads the next packet (by calling
@@ -204,21 +204,29 @@
           <code class="classname">Pkthdr</code> instance describing the data
           passed and <em class="parameter"><code>data</code></em> is the data itself.
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8772485808"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>setfilter &#8212; Specify a filter</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777576544"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>stats &#8212; get capture statistics</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+              (int32, int32, int32) <b class="fsfunc">stats</b>
+            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777580368"></a><h2>DESCRIPTION</h2>
+        
+        <p>
+          <code class="function">stats</code> returns statistics on the current
+          capture as a tuple (recv, drop, ifdrop)
+        </p>
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777582384"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>setfilter &#8212; Specify a filter</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               <b class="fsfunc">setfilter</b>
             (</code></td><td><var class="pdparam">filter</var><code>)</code>;</td><td> </td></tr></table><div class="paramdef-list"><code>
               string <var class="pdparam">filter</var>
-            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772491472"></a><h2>DESCRIPTION</h2>
+            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777586960"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">setfilter</code> is used to specify a filter
           for this object.
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8772493728"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>getnet, getmask &#8212; Get the associated network number and mask</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777588864"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>getnet, getmask &#8212; Get the associated network number and mask</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               int32 <b class="fsfunc">getnet</b>
             (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               int32 <b class="fsfunc">getmask</b>
-            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772501120"></a><h2>DESCRIPTION</h2>
+            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777595184"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">getnet</code> and <code class="function">getmask</code>
@@ -226,9 +234,9 @@
           with the network device attached to this
           <code class="classname">Reader</code>.
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8772504720"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>datalink &#8212; Obtain the link layer type</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777598240"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>datalink &#8212; Obtain the link layer type</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               int <b class="fsfunc">datalink</b>
-            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8772509312"></a><h2>DESCRIPTION</h2>
+            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777602064"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">datalink</code> returns the link layer type; link layer types it can return include:
@@ -438,7 +446,7 @@
                   <acronym class="acronym">LLAP</acronym> header.
                 </dd></dl></div><p>
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8775771568"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>getnonblock, setnonblock &#8212; 
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777703632"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>getnonblock, setnonblock &#8212; 
           Manipulate the
           <em class="firstterm">non-blocking</em> flag
         </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
@@ -447,14 +455,14 @@
               <b class="fsfunc">setnonblock</b>
             (</code></td><td><var class="pdparam">state</var><code>)</code>;</td><td> </td></tr></table><div class="paramdef-list"><code>
               int <var class="pdparam">state</var>
-            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8775778944"></a><h2>DESCRIPTION</h2>
+            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777712080"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">getnonblock</code> returns the current
           non-blocking state of the capture descriptor; it
           always returns <span class="returnvalue">0</span> on <em class="glossterm">savefile</em>s.
         </p>
-      </div><div class="refsect1"><a name="idp8775781616"></a><h2>DESCRIPTION</h2>
+      </div><div class="refsect1"><a name="idp8777715024"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">setnonblock</code> puts a capture descriptor,
@@ -471,11 +479,11 @@
           <code class="function">loop</code> and <code class="function">next</code> will
           not work in non-blocking mode.
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8775787696"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>dump_open &#8212; Create a Dumper object</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777722160"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>dump_open &#8212; Create a Dumper object</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               Dumper <b class="fsfunc">dump_open</b>
             (</code></td><td><var class="pdparam">filename</var><code>)</code>;</td><td> </td></tr></table><div class="paramdef-list"><code>
               string <var class="pdparam">filename</var>
-            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8775792272"></a><h2>DESCRIPTION</h2>
+            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777727664"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">dump_open</code> is called to open a <em class="glossterm">savefile</em>
@@ -485,11 +493,11 @@
           <em class="parameter"><code>filename</code></em> specifies the name of the
           file to open.
         </p>
-      </div></div></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8775797104"></a>Dumper Object Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8775797744">dump</a></span><span class="refpurpose"> &#8212; 
+      </div></div></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8777733408"></a>Dumper Object Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8777734240">dump</a></span><span class="refpurpose"> &#8212; 
           Dump a packet to a <em class="glossterm">savefile</em>
-        </span></dt><dt><span class="refentrytitle"><a href="#idp8775807008">close</a></span><span class="refpurpose"> &#8212; 
+        </span></dt><dt><span class="refentrytitle"><a href="#idp8777745424">close</a></span><span class="refpurpose"> &#8212; 
                 Close a Dumper
-            </span></dt></dl></div><div class="refentry"><a name="idp8775797744"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>dump &#8212; 
+            </span></dt></dl></div><div class="refentry"><a name="idp8777734240"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>dump &#8212; 
           Dump a packet to a <em class="glossterm">savefile</em>
         </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               <b class="fsfunc">dump</b>
@@ -497,29 +505,29 @@
               Pkthdr <var class="pdparam">header</var>
             </code>;<br><code>
               string <var class="pdparam">data</var>
-            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8775803712"></a><h2>DESCRIPTION</h2>
+            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777741568"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">dump</code> outputs a packet to the <em class="glossterm">savefile</em>
           opened with <code class="function">dump_open</code> from type
           <code class="classname">Reader</code>.
         </p>
-      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8775807008"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>close &#8212; 
+      </div></div><div class="refentry"><div class="refentry.separator"><hr></div><a name="idp8777745424"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>close &#8212; 
                 Close a Dumper
             </p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
                   Dumper <b class="fsfunc">close</b>
-                (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8775810832"></a><h2>DESCRIPTION</h2>
+                (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777749968"></a><h2>DESCRIPTION</h2>
             
             <p>
               <code class="function">close</code> closes a <code class="classname">Dumper</code>.
             </p>
-        </div></div></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8775813248"></a>Pkthdr Object Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8775813888">getts</a></span><span class="refpurpose"> &#8212; Obtain packet header information</span></dt></dl></div><div class="refentry"><a name="idp8775813888"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>getts, getcaplen, getlen &#8212; Obtain packet header information</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+        </div></div></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8777752672"></a>Pkthdr Object Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8777753312">getts</a></span><span class="refpurpose"> &#8212; Obtain packet header information</span></dt></dl></div><div class="refentry"><a name="idp8777753312"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>getts, getcaplen, getlen &#8212; Obtain packet header information</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               (long, long) <b class="fsfunc">getts</b>
             (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               long <b class="fsfunc">getcaplen</b>
             (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               long <b class="fsfunc">getlen</b>
-            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8775822544"></a><h2>DESCRIPTION</h2>
+            (</code></td><td><code>)</code>;</td><td> </td></tr></table><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777763824"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">getts</code>, <code class="function">getcaplen</code>
@@ -537,11 +545,11 @@
           available from the capture, if the length of the packet is
           larger than the maximum number of bytes to capture).
         </p>
-      </div></div></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8775826912"></a>Bpf Object Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8775827552">filter</a></span><span class="refpurpose"> &#8212; Test a packet against a compiled filter</span></dt></dl></div><div class="refentry"><a name="idp8775827552"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>filter &#8212; Test a packet against a compiled filter</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
+      </div></div></div><div class="reference"><div class="titlepage"><div><div><h1 class="title"><a name="idp8777768608"></a>Bpf Object Reference</h1></div></div><hr></div><div class="toc"><p><b>Table of Contents</b></p><dl class="toc"><dt><span class="refentrytitle"><a href="#idp8777769344">filter</a></span><span class="refpurpose"> &#8212; Test a packet against a compiled filter</span></dt></dl></div><div class="refentry"><a name="idp8777769344"></a><div class="titlepage"></div><div class="refnamediv"><h2>Name</h2><p>filter &#8212; Test a packet against a compiled filter</p></div><div class="refsynopsisdiv"><h2>Synopsis</h2><div class="funcsynopsis"><table border="0" class="funcprototype-table" summary="Function synopsis" style="cellspacing: 0; cellpadding: 0;"><tr><td><code class="funcdef">
               int <b class="fsfunc">filter</b>
             (</code></td><td><var class="pdparam">packet</var><code>)</code>;</td><td> </td></tr></table><div class="paramdef-list"><code>
               string <var class="pdparam">packet</var>
-            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8775832128"></a><h2>DESCRIPTION</h2>
+            </code>;</div><div class="funcprototype-spacer"> </div></div></div><div class="refsect1"><a name="idp8777775056"></a><h2>DESCRIPTION</h2>
         
         <p>
           <code class="function">filter</code> tests a packet against a
@@ -552,7 +560,7 @@
           <code class="function">filter</code> returns
           <span class="returnvalue">0</span>.
         </p>
-      </div></div></div><div class="bibliography"><div class="titlepage"><div><div><h2 class="title"><a name="idp8775836608"></a>Bibliography</h2></div></div></div><div class="bibliodiv"><h3 class="title"><a name="idp8775837248"></a>Sources</h3><div class="biblioentry"><a name="idp8775837888"></a><p><span class="bibliomisc">
+      </div></div></div><div class="bibliography"><div class="titlepage"><div><div><h2 class="title"><a name="idp8777780064"></a>Bibliography</h2></div></div></div><div class="bibliodiv"><h3 class="title"><a name="idp8777780800"></a>Sources</h3><div class="biblioentry"><a name="idp8777781632"></a><p><span class="bibliomisc">
           Portions of this work based on
           <span class="citerefentry"><span class="refentrytitle">pcap</span>(3)</span> by the Lawrence
           Berkeley National Laboratory, University of California,
