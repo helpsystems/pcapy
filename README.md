@@ -1,4 +1,6 @@
-##What is Pcapy?##
+## What is Pcapy? ##
+
+[![Build status](https://ci.appveyor.com/api/projects/status/pi4bqe4kgubgr37x?svg=true)](https://ci.appveyor.com/project/CoreSecurity/pcapy)
 
 Pcapy is a Python extension module that enables software written in
 Python to access the routines from the pcap packet capture library.
@@ -9,25 +11,25 @@ framework for low-level network monitoring. Applications include
 network statistics collection, security monitoring, network debugging,
 etc."
 
-##What makes pcapy different from the others?##
+## What makes pcapy different from the others? ##
 
  * works with Python threads.
  * works both in UNIX with libpcap and Windows with WinPcap.
  * provides a simpler Object Oriented API.
 
-##Getting Pcapy##
+## Getting Pcapy ##
 
 Current and past releases are available from
 https://github.com/CoreSecurity/pcapy.
 
-##Setup##
+## Setup ##
 
-###Quick start###
+### Quick start ###
 
 Grab the latest stable release, unpack it and run 'python setup.py
 install' from the directory where you placed it. Isn't that easy?
 
-###Requirements###
+### Requirements ###
 
  * A Python interpreter. Versions 2.1.3 and newer are known to work.
  * A C++ compiler. GCC G++ 2.95, as well as Microsoft Visual Studio
@@ -36,7 +38,7 @@ install' from the directory where you placed it. Isn't that easy?
    or newer.
  * A recent release of Pcapy.
 
-###Compiling the source and installing###
+### Compiling the source and installing ###
 
 As this extension is written in C++ it needs to be compiled for the
 host system before it can be accessed from Python. Fortunately this
@@ -54,14 +56,14 @@ system where Python and libpcap are available.
 
 For windows please refer to this [link] (https://github.com/CoreSecurity/pcapy/wiki/Compiling-Pcapy-on-Windows).
 
-##Licensing##
+## Licensing ##
 
 This software is provided under under a slightly modified version of
 the Apache Software License. See the accompanying LICENSE file for
 more information.
 
-##Contact Us##
+## Contact Us ##
 
 Whether you want to report a bug, send a patch or give some
 suggestions on this package, drop us a few lines at
-oss@coresecurity.com.
+`oss@coresecurity.com`.
