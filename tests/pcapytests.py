@@ -121,13 +121,11 @@ class TestPcapy(unittest.TestCase):
 
             self.assertTrue(h1 is None)
             self.assertTrue(h2 is None)
+            del r2
+        finally:
             os.unlink('tmp.pcap')
-        except Exception:
-            try:
-                os.unlink('tmp.pcap')
-            except Exception:
-                pass
-            raise  # bubble up exception so test fails
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestPcapy)
-unittest.TextTestRunner(verbosity=2).run(suite)
+result = unittest.TextTestRunner(verbosity=2).run(suite)
+if not result.wasSuccessful():
+    sys.exit(1)
