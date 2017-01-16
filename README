@@ -1,5 +1,5 @@
 This file is an extract from the the online documentation at
-http://oss.coresecurity.com/pcapy/.
+https://www.coresecurity.com/corelabs-research/open-source-tools/pcapy
 
 
 What is Pcapy?
@@ -26,7 +26,7 @@ Getting Pcapy
 =============
 
 Current and past releases are available from
-http://oss.coresecurity.com/pcapy/.
+https://www.coresecurity.com/corelabs-research/open-source-tools/pcapy
 
 
 Setup
@@ -62,7 +62,7 @@ Python's modules path; note that you might need special permissions to
 write there. For more information on what commands and options are
 available from setup.py, run 'python setup.py --help-commands'.
 
-This extension has been tested under Linux and Windows 2000 systems
+This extension has been tested under Linux and Windows systems
 and is known to work there, but it ought to work out-of-the-box on any
 system where Python and libpcap are available.
 

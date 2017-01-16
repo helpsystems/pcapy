@@ -21,9 +21,9 @@ if sys.platform == 'win32':
             library_dirs.append(os.path.join(wpdpack, 'Lib'))
     else:
         # WinPcap include files
-        include_dirs.append(r'c:\devel\oss\wpdpack\Include')
+        include_dirs.append(r'c:\wpdpack\Include')
         # WinPcap library files
-        library_dirs.append(r'c:\devel\oss\wpdpack\Lib')
+        library_dirs.append(r'c:\wpdpack\Lib')
     libraries = ['wpcap', 'packet', 'ws2_32']
 else:
     libraries = ['pcap', 'stdc++']
@@ -63,7 +63,7 @@ sysconfig._init_posix = my_init_posix
 
 
 setup(name=PACKAGE_NAME,
-      version="0.10.10",
+      version="0.11.1",
       url="https://github.com/CoreSecurity/pcapy",
       author="CORE Security",
       author_email="oss@coresecurity.com",
