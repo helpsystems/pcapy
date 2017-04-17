@@ -53,6 +53,9 @@
             <paramdef>
               int <parameter>to_ms</parameter>
             </paramdef>
+            <paramdef>
+              int <parameter>buffer</parameter>
+            </paramdef>
           </funcprototype>
         </funcsynopsis>
       </refsynopsisdiv>
@@ -84,6 +87,9 @@
           kernel in one operation. Not all platforms support a read
           timeout; on platforms that don't, the read timeout is
           ignored.
+          <parameter>buffer</parameter> sets the buffer size that
+          will be used on a capture handle when the handle is activated
+          to buffer, which is in units of bytes.
         </para>
       </refsect1>
     </refentry>
