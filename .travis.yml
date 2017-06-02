@@ -1,4 +1,5 @@
 language: python
+os: linux
 python: 2.7
 addons:
   apt:
