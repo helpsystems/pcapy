@@ -1,0 +1,12 @@
+language: python
+python: 2.7
+addons:
+  apt:
+    packages:
+      - libpcap-dev
+matrix:
+  include:
+    - os: osx
+      python: system
+      install: brew install libpcap
+script: pip install .
