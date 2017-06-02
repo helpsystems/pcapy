@@ -7,7 +7,7 @@ addons:
 matrix:
   include:
     - os: osx
-      python: system
+      language: generic
       install: brew install libpcap
     - os: linux
     - os: linux
