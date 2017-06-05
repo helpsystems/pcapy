@@ -7,8 +7,8 @@
  *
  */
 
-#include <pcap.h>
 #include <Python.h>
+#include <pcap.h>
 
 #include "pcapy.h"
 #include "pcapobj.h"
