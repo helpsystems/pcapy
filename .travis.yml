@@ -23,4 +23,4 @@ script:
   - python setup.py build
   - python setup.py bdist_wheel
   - pip install --pre --no-index --find-links dist/ pcapy
-  - coverage run tests/pcapytests.py && codecov
+  - pushd tests && coverage run pcapytests.py && popd && codecov
