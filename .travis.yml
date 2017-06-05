@@ -16,8 +16,9 @@ matrix:
       language: generic
       install: brew install libpcap
     - os: linux
-    - os: linux
       dist: trusty
 script:
-  - pip install .
+  - python setup.py build
   - python setup.py bdist_wheel
+  - pip install --pre --no-index --find-links dist/ pcapy
+  - pushd tests && python pcapytests.py && popd
