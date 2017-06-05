@@ -17,8 +17,10 @@ matrix:
       install: brew install libpcap
     - os: linux
       dist: trusty
+install:
+  - pip install codecov
 script:
   - python setup.py build
   - python setup.py bdist_wheel
   - pip install --pre --no-index --find-links dist/ pcapy
-  - pushd tests && python pcapytests.py && popd
+  - pushd tests && coverage run pcapytests.py && popd
