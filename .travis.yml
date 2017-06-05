@@ -12,4 +12,6 @@ matrix:
     - os: linux
     - os: linux
       dist: trusty
-script: pip install .
+script:
+  - pip install .
+  - python setup.py bdist_wheel
