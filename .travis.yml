@@ -16,6 +16,8 @@ matrix:
       install: brew install libpcap
     - os: linux
       dist: trusty
+  allow_failures:
+    - os: osx
 install:
   - pip install codecov
 script:
