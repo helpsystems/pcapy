@@ -19,7 +19,7 @@ matrix:
   allow_failures:
     - os: osx
 install:
-  - pip install codecov
+  - pip install coverage codecov
 script:
   - python setup.py build
   - python setup.py bdist_wheel
