@@ -58,6 +58,7 @@ static PyObject* p_getnonblock(register pcapobject* pp, PyObject* args);
 static PyObject* p_dump_open(register pcapobject* pp, PyObject* args);
 static PyObject* p_sendpacket(register pcapobject* pp, PyObject* args);
 static PyObject* p_stats( register pcapobject* pp, PyObject*);
+static PyObject* p_getfd(register pcapobject* pp, PyObject* args);
 
 static PyMethodDef p_methods[] = {
   {"loop", (PyCFunction) p_loop, METH_VARARGS, "loops packet dispatching"},
@@ -72,6 +73,9 @@ static PyMethodDef p_methods[] = {
   {"dump_open", (PyCFunction) p_dump_open, METH_VARARGS, "creates a dumper object"},
   {"sendpacket", (PyCFunction) p_sendpacket, METH_VARARGS, "sends a packet through the interface"},
   {"stats", (PyCFunction) p_stats, METH_NOARGS, "returns capture statistics"},
+#ifndef WIN32
+  {"getfd", (PyCFunction) p_getfd, METH_VARARGS, "get selectable pcap fd"},
+#endif
   {NULL, NULL}	/* sentinel */
 };
 
@@ -545,3 +549,18 @@ p_sendpacket(register pcapobject* pp, PyObject* args)
   Py_INCREF(Py_None);
   return Py_None;
 }
+
+#ifndef WIN32
+static PyObject*
+p_getfd(register pcapobject* pp, PyObject* args)
+{
+  if (pp->ob_type != &Pcaptype)
+    {
+      PyErr_SetString(PcapError, "Not a pcap object");
+      return NULL;
+    }
+
+    int fd = pcap_get_selectable_fd(pp->pcap);
+    return Py_BuildValue("i", fd);
+}
+#endif
