@@ -17,9 +17,11 @@
 #include "pcap_pkthdr.h"
 
 
+char *
+get_windows_interface_friendly_name(const char *interface_devicename);
+static char* luid_to_guid(char *luid);
+
 PyObject *PcapError;
-
-
 
 // module methods
 
@@ -57,12 +59,15 @@ findalldevs(PyObject *self, PyObject *args)
       PyErr_SetString(PcapError, "No valid interfaces to open");
       return NULL;
     }
-
+    
   pcap_if_t *cursor = devs;
   PyObject* list = PyList_New(0);
   while(cursor)
     {
-      PyList_Append(list, Py_BuildValue("s", cursor->name));
+      char *luid = get_windows_interface_friendly_name(cursor->name);
+      PyList_Append(list, Py_BuildValue("(s,s)", luid, cursor->name));
+      free(luid);
+        
       cursor = cursor->next;
     }
 
@@ -86,6 +91,12 @@ open_live(PyObject *self, PyObject *args)
   if(!PyArg_ParseTuple(args,"siii:open_live",&device,&snaplen,&promisc,&to_ms))
     return NULL;
 
+    char *guid = luid_to_guid(device);
+    if ( NULL != guid )
+    {
+        device = guid;
+    }
+    
   int status = pcap_lookupnet(device, &net, &mask, errbuff);
   if(status)
     {
@@ -96,6 +107,7 @@ open_live(PyObject *self, PyObject *args)
   pcap_t* pt;
 
   pt = pcap_open_live(device, snaplen, promisc!=0, to_ms, errbuff);
+  free(guid);
   if(!pt)
     {
       PyErr_SetString(PcapError, errbuff);
@@ -171,6 +183,27 @@ bpf_compile(PyObject* self, PyObject* args)
   return new_bpfobject( bpf );
 }
 
+static PyObject*
+py_guid_to_luid(PyObject *self, PyObject *args)
+{
+    char *luid = get_windows_interface_friendly_name(PyString_AsString(args));
+    
+    PyObject *retval = Py_BuildValue("s", luid);
+    free(luid);
+    
+    return retval;
+}
+
+static PyObject*
+py_luid_to_guid(PyObject *self, PyObject *args)
+{
+    char *guid = luid_to_guid(PyString_AsString(args));
+    
+    PyObject *retval = Py_BuildValue("s", guid);
+    free(guid);
+    
+    return retval;
+}
 
 static PyMethodDef pcap_methods[] = {
   {"open_live", open_live, METH_VARARGS, "open_live(device, snaplen, promisc, to_ms) opens a pcap device"},
@@ -178,6 +211,8 @@ static PyMethodDef pcap_methods[] = {
   {"lookupdev", lookupdev, METH_VARARGS, "lookupdev() looks up a pcap device"},
   {"findalldevs", findalldevs, METH_VARARGS, "findalldevs() lists all available interfaces"},
   {"compile", bpf_compile, METH_VARARGS, "compile(linktype, snaplen, filter, optimize, netmask) creates a bpfprogram object"},
+  {"guid_to_luid",py_guid_to_luid, METH_O, "converts a guid to a luid"},
+  {"luid_to_guid", py_luid_to_guid, METH_O, "converts luid to a guid"},
   {NULL, NULL}
 };
 
@@ -274,3 +309,274 @@ initpcapy(void)
 #endif  //PY_MAJOR_VERSION >= 3
 }
 /* vim: set tabstop=2 shiftwidth=2 expandtab: */
+
+
+
+
+
+
+
+
+
+
+
+#include <Iphlpapi.h>
+
+static BOOL gethexdigit(const char *p)
+{
+    if(*p >= '0' && *p <= '9'){
+        return *p - '0';
+    }else if(*p >= 'A' && *p <= 'F'){
+        return *p - 'A' + 0xA;
+    }else if(*p >= 'a' && *p <= 'f'){
+        return *p - 'a' + 0xa;
+    }else{
+        return -1; /* Not a hex digit */
+    }
+}
+
+static BOOL get8hexdigits(const char *p, DWORD *d)
+{
+    int digit;
+    DWORD val;
+    int i;
+
+    val = 0;
+    for(i = 0; i < 8; i++){
+        digit = gethexdigit(p++);
+        if(digit == -1){
+            return FALSE; /* Not a hex digit */
+        }
+        val = (val << 4) | digit;
+    }
+    *d = val;
+    return TRUE;
+}
+
+static BOOL get4hexdigits(const char *p, WORD *w)
+{
+    int digit;
+    WORD val;
+    int i;
+
+    val = 0;
+    for(i = 0; i < 4; i++){
+        digit = gethexdigit(p++);
+        if(digit == -1){
+            return FALSE; /* Not a hex digit */
+        }
+        val = (val << 4) | digit;
+    }
+    *w = val;
+    return TRUE;
+}
+
+static BOOL
+parse_as_guid(const char *guid_text, GUID *guid)
+{
+    int i;
+    int digit1, digit2;
+
+    if(*guid_text != '{'){
+        return FALSE; /* Nope, not enclosed in {} */
+    }
+    guid_text++;
+    /* There must be 8 hex digits; if so, they go into guid->Data1 */
+    if(!get8hexdigits(guid_text, &guid->Data1)){
+        return FALSE; /* nope, not 8 hex digits */
+    }
+    guid_text += 8;
+    /* Now there must be a hyphen */
+    if(*guid_text != '-'){
+        return FALSE; /* Nope */
+    }
+    guid_text++;
+    /* There must be 4 hex digits; if so, they go into guid->Data2 */
+    if(!get4hexdigits(guid_text, &guid->Data2)){
+        return FALSE; /* nope, not 4 hex digits */
+    }
+    guid_text += 4;
+    /* Now there must be a hyphen */
+    if(*guid_text != '-'){
+        return FALSE; /* Nope */
+    }
+    guid_text++;
+    /* There must be 4 hex digits; if so, they go into guid->Data3 */
+    if(!get4hexdigits(guid_text, &guid->Data3)){
+        return FALSE; /* nope, not 4 hex digits */
+    }
+    guid_text += 4;
+    /* Now there must be a hyphen */
+    if(*guid_text != '-'){
+        return FALSE; /* Nope */
+    }
+    guid_text++;
+    /*
+     * There must be 4 hex digits; if so, they go into the first 2 bytes
+     * of guid->Data4.
+     */
+    for(i = 0; i < 2; i++){
+        digit1 = gethexdigit(guid_text);
+        if(digit1 == -1){
+            return FALSE; /* Not a hex digit */
+        }
+        guid_text++;
+        digit2 = gethexdigit(guid_text);
+        if(digit2 == -1){
+            return FALSE; /* Not a hex digit */
+        }
+        guid_text++;
+        guid->Data4[i] = (digit1 << 4)|(digit2);
+    }
+    /* Now there must be a hyphen */
+    if(*guid_text != '-'){
+        return FALSE; /* Nope */
+    }
+    guid_text++;
+    /*
+     * There must be 12 hex digits; if so,t hey go into the next 6 bytes
+     * of guid->Data4.
+     */
+    for(i = 0; i < 6; i++){
+        digit1 = gethexdigit(guid_text);
+        if(digit1 == -1){
+            return FALSE; /* Not a hex digit */
+        }
+        guid_text++;
+        digit2 = gethexdigit(guid_text);
+        if(digit2 == -1){
+            return FALSE; /* Not a hex digit */
+        }
+        guid_text++;
+        guid->Data4[i+2] = (digit1 << 4)|(digit2);
+    }
+    /* Now there must be a closing } */
+    if(*guid_text != '}'){
+        return FALSE; /* Nope */
+    }
+    guid_text++;
+    /* And that must be the end of the string */
+    if(*guid_text != '\0'){
+        return FALSE; /* Nope */
+    }
+    return TRUE;
+}
+
+
+static char* luid_to_guid(char *luid)
+{
+  char errbuff[PCAP_ERRBUF_SIZE];
+  pcap_if_t *devs;
+
+  int status = pcap_findalldevs(&devs, errbuff);
+  if(status)
+    {
+      PyErr_SetString(PcapError, errbuff);
+      return NULL;
+    }
+
+  if(devs==NULL)
+    {
+      PyErr_SetString(PcapError, "No valid interfaces to open");
+      return NULL;
+    }
+    
+  pcap_if_t *cursor = devs;
+  
+    char* cursor_luid;
+    char *ret_guid = NULL;
+    while(cursor)
+    {
+        cursor_luid = get_windows_interface_friendly_name(cursor->name);
+        
+        
+        if (!strcmp(cursor_luid, luid))
+        {
+            ret_guid = strdup(cursor->name);
+            goto done;
+        }
+        
+        free(cursor_luid);
+        
+        cursor = cursor->next;
+    }
+    
+done:
+    
+  pcap_freealldevs(devs);
+
+  return ret_guid;
+}
+
+static char* guid_to_luid(GUID *guid)
+{
+    BOOL status;
+    int size;
+    char *name;
+    
+    WCHAR wName[128 + 1];
+    HMODULE hIPHlpApi = LoadLibrary(TEXT("iphlpapi.dll"));
+    
+    typedef HRESULT (WINAPI *ProcAddr_nhGINFG) ( GUID *InterfaceGuid,  PCWSTR InterfaceAlias, DWORD *LengthAddress, wchar_t *a4, wchar_t *a5);
+
+    ProcAddr_nhGINFG Proc_nhGetInterfaceNameFromGuid = NULL;
+    Proc_nhGetInterfaceNameFromGuid = (ProcAddr_nhGINFG) GetProcAddress(hIPHlpApi, "NhGetInterfaceNameFromGuid");
+    if (Proc_nhGetInterfaceNameFromGuid!= NULL)
+    {
+        wchar_t *p4=NULL, *p5=NULL;
+        DWORD NameSize;
+
+        /* testing of nhGetInterfaceNameFromGuid indicates the unpublished API function expects the 3rd parameter
+        * to be the available space in bytes (as compared to wchar's) available in the second parameter buffer
+        * to receive the friendly name (in unicode format) including the space for the nul termination.*/
+        NameSize = sizeof(wName);
+
+        /* do the guid->friendlyname lookup */
+        status = ( 0 == Proc_nhGetInterfaceNameFromGuid(guid, wName, &NameSize, p4, p5) );
+    }
+    
+    /* we have finished with iphlpapi.dll - release it */
+    FreeLibrary(hIPHlpApi);
+
+    if(FALSE == status){
+        /* failed to get the friendly name, nothing further to do */
+        return NULL;
+    }
+
+    /* Get the required buffer size, and then convert the string
+    * from UTF-16 to UTF-8. */
+    size=WideCharToMultiByte(CP_UTF8, 0, wName, -1, NULL, 0, NULL, NULL);
+    name=(char *) malloc(size);
+    if (name == NULL){
+        return NULL;
+    }
+    size=WideCharToMultiByte(CP_UTF8, 0, wName, -1, name, size, NULL, NULL);
+    if(size==0){
+        /* bytes written == 0, indicating some form of error*/
+        free(name);
+        return NULL;
+    }
+    return name;
+}
+
+char *
+get_windows_interface_friendly_name(const char *interface_devicename)
+{
+    const char* guid_text;
+    GUID guid;
+
+    /* Extract the guid text from the interface device name */
+    if(strncmp("\\Device\\NPF_", interface_devicename, 12)==0){
+        guid_text=interface_devicename+12; /* skip over the '\Device\NPF_' prefix, assume the rest is the guid text */
+    }else{
+        guid_text=interface_devicename;
+        
+    }
+
+    if (!parse_as_guid(guid_text, &guid)){
+        return strdup(interface_devicename); /* not a GUID, so no friendly name */
+    }
+
+    /* guid okay, get the interface friendly name associated with the guid */
+    return guid_to_luid(&guid);
+}

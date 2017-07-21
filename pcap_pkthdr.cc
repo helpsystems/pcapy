@@ -43,11 +43,22 @@ static PyObject* p_getts(register pkthdr* pp, PyObject* args);
 static PyObject* p_getcaplen(register pkthdr* pp, PyObject* args);
 static PyObject* p_getlen(register pkthdr* pp, PyObject* args);
 
+static PyObject* p_setlen(register pkthdr* pp, PyObject* args);
+static PyObject* p_setcaplen(register pkthdr* pp, PyObject* args);
+static PyObject* p_addlen(register pkthdr* pp, PyObject* args);
+static PyObject* p_addcaplen(register pkthdr* pp, PyObject* args);
+
 
 static PyMethodDef p_methods[] = {
   {"getts", (PyCFunction) p_getts, METH_VARARGS, "get timestamp tuple (seconds, microseconds) since the Epoch"},
   {"getcaplen", (PyCFunction) p_getcaplen, METH_VARARGS, "returns the length of portion present"},
   {"getlen", (PyCFunction) p_getlen, METH_VARARGS, "returns the length of the packet (off wire)"},
+  
+  
+  {"setlen", (PyCFunction) p_setlen, METH_O, "sets the length of the packet (off wire)"},
+  {"setcaplen", (PyCFunction) p_setcaplen, METH_O, "sets the length of the packet (off wire)"},
+  {"addlen", (PyCFunction) p_addlen, METH_O, "adds to the length of the packet (off wire)"},
+  {"addcaplen", (PyCFunction) p_addcaplen, METH_O, "adds to the length of the packet (off wire)"},
   {NULL, NULL}	/* sentinel */
 };
 
@@ -174,6 +185,56 @@ p_getlen(register pkthdr* pp, PyObject* args)
   }
 
   return Py_BuildValue("l", pp->len);
+}
+
+
+static PyObject*
+p_setlen(register pkthdr* pp, PyObject* args)
+{
+  if (Py_TYPE(pp) != &Pkthdr_type) {
+	  PyErr_SetString(PcapError, "Not a pkthdr object");
+	  return NULL;
+  }
+
+  pp->len = PyInt_AsLong(args);
+  
+  return Py_BuildValue("l", pp->len);
+}
+static PyObject*
+p_setcaplen(register pkthdr* pp, PyObject* args)
+{
+  if (Py_TYPE(pp) != &Pkthdr_type) {
+	  PyErr_SetString(PcapError, "Not a pkthdr object");
+	  return NULL;
+  }
+  
+  pp->caplen = PyInt_AsLong(args);
+
+  return Py_BuildValue("l", pp->caplen);
+}
+static PyObject*
+p_addlen(register pkthdr* pp, PyObject* args)
+{
+  if (Py_TYPE(pp) != &Pkthdr_type) {
+	  PyErr_SetString(PcapError, "Not a pkthdr object");
+	  return NULL;
+  }
+
+  pp->len += PyInt_AsLong(args);
+  
+  return Py_BuildValue("l", pp->len);
+}
+static PyObject*
+p_addcaplen(register pkthdr* pp, PyObject* args)
+{
+  if (Py_TYPE(pp) != &Pkthdr_type) {
+	  PyErr_SetString(PcapError, "Not a pkthdr object");
+	  return NULL;
+  }
+  
+  pp->caplen += PyInt_AsLong(args);
+
+  return Py_BuildValue("l", pp->caplen);
 }
 
 int
