@@ -82,5 +82,5 @@ setup(name=PACKAGE_NAME,
       data_files=[
           (os.path.join('share', 'doc', PACKAGE_NAME),
               ['README', 'LICENSE', 'pcapy.html']),
-          ('tests', ['tests/pcapytests.py', 'tests/96pings.pcap'])]
+          (os.path.join('share', 'doc', PACKAGE_NAME, 'tests'), ['tests/pcapytests.py', 'tests/96pings.pcap'])]
       )
