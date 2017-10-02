@@ -23,7 +23,10 @@ if sys.platform == 'win32':
         # WinPcap include files
         include_dirs.append(r'c:\wpdpack\Include')
         # WinPcap library files
-        library_dirs.append(r'c:\wpdpack\Lib')
+        if sys.maxsize > 2**32:  # x64 Python interpreter
+            library_dirs.append(r'c:\wpdpack\Lib\x64')
+        else:  # x86 Python interpreter
+            library_dirs.append(r'c:\wpdpack\Lib')
     libraries = ['wpcap', 'packet', 'ws2_32']
 else:
     libraries = ['pcap', 'stdc++']
