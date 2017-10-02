@@ -125,6 +125,28 @@ class TestPcapy(unittest.TestCase):
         finally:
             os.unlink('tmp.pcap')
 
+    def testClose(self):
+        """
+        #7 Test the close method
+        """
+        r = pcapy.open_offline(TestPcapy._96PINGS)
+        hdr, body = r.next()
+        assert hdr is not None
+        r.close()
+        with self.assertRaises(ValueError):
+            r.next()
+
+    def testContextManager(self):
+        """
+        #8 Test the context manager support
+        """
+        with pcapy.open_offline(TestPcapy._96PINGS) as r:
+            hdr, body = r.next()
+            assert hdr is not None
+
+        with self.assertRaises(ValueError):
+            r.next()
+
 suite = unittest.TestLoader().loadTestsFromTestCase(TestPcapy)
 result = unittest.TextTestRunner(verbosity=2).run(suite)
 if not result.wasSuccessful():

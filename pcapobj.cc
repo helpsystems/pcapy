@@ -33,17 +33,31 @@ typedef struct {
 
 // PcapType
 
-static void
-pcap_dealloc(register pcapobject* pp)
+static PyObject*
+p_close(register pcapobject* pp, PyObject*)
 {
   if ( pp->pcap )
     pcap_close(pp->pcap);
 
   pp->pcap = NULL;
 
+  Py_RETURN_NONE;
+}
+
+static void
+pcap_dealloc(register pcapobject* pp)
+{
+  p_close(pp, NULL);
+
   PyObject_Del(pp);
 }
 
+static PyObject *
+err_closed(void)
+{
+  PyErr_SetString(PyExc_ValueError, "pcap is closed");
+  return NULL;
+}
 
 // pcap methods
 static PyObject* p_getnet(register pcapobject* pp, PyObject* args);
@@ -58,6 +72,7 @@ static PyObject* p_getnonblock(register pcapobject* pp, PyObject* args);
 static PyObject* p_dump_open(register pcapobject* pp, PyObject* args);
 static PyObject* p_sendpacket(register pcapobject* pp, PyObject* args);
 static PyObject* p_stats( register pcapobject* pp, PyObject*);
+static PyObject* p__enter__( register pcapobject* pp, PyObject*);
 static PyObject* p_getfd(register pcapobject* pp, PyObject* args);
 
 static PyMethodDef p_methods[] = {
@@ -73,6 +88,9 @@ static PyMethodDef p_methods[] = {
   {"dump_open", (PyCFunction) p_dump_open, METH_VARARGS, "creates a dumper object"},
   {"sendpacket", (PyCFunction) p_sendpacket, METH_VARARGS, "sends a packet through the interface"},
   {"stats", (PyCFunction) p_stats, METH_NOARGS, "returns capture statistics"},
+  {"close", (PyCFunction) p_close, METH_NOARGS, "close the capture"},
+  {"__enter__", (PyCFunction) p__enter__, METH_NOARGS, NULL},
+  {"__exit__", (PyCFunction) p_close, METH_VARARGS, NULL},
 #ifndef WIN32
   {"getfd", (PyCFunction) p_getfd, METH_VARARGS, "get selectable pcap fd"},
 #endif
@@ -147,6 +165,31 @@ PyTypeObject Pcaptype = {
   0,                           /* tp_as_number*/
   0,                           /* tp_as_sequence*/
   0,                           /* tp_as_mapping*/
+  0,                           /* tp_hash */
+  0,                           /* tp_call */
+  0,                           /* tp_str */
+  0,                           /* tp_getattro */
+  0,                           /* tp_setattro */
+  0,                           /* tp_as_buffer */
+  Py_TPFLAGS_DEFAULT,          /* tp_flags */
+  NULL,                        /* tp_doc */
+  0,                           /* tp_traverse */
+  0,                           /* tp_clear */
+  0,                           /* tp_richcompare */
+  0,                           /* tp_weaklistoffset */
+  0,                           /* tp_iter */
+  0,                           /* tp_iternext */
+  p_methods,                   /* tp_methods */
+  0,                           /* tp_members */
+  0,                           /* tp_getset */
+  0,                           /* tp_base */
+  0,                           /* tp_dict */
+  0,                           /* tp_descr_get */
+  0,                           /* tp_descr_set */
+  0,                           /* tp_dictoffset */
+  0,                           /* tp_init */
+  0,                           /* tp_alloc */
+  0,                           /* tp_new */
 #endif
 };
 
@@ -189,6 +232,9 @@ p_getnet(register pcapobject* pp, PyObject* args)
       return NULL;
     }
 
+  if (!pp->pcap)
+    return err_closed();
+
   char ip_str[20];
   ntos(ip_str, sizeof(ip_str), pp->net);
   return Py_BuildValue("s", ip_str);
@@ -202,6 +248,9 @@ p_getmask(register pcapobject* pp, PyObject* args)
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
     }
+
+  if (!pp->pcap)
+    return err_closed();
 
   char ip_str[20];
   ntos(ip_str, sizeof(ip_str), pp->mask);
@@ -220,6 +269,9 @@ p_setfilter(register pcapobject* pp, PyObject* args)
       PyErr_SetString(PcapError, "Not a pcap object");
 	return NULL;
     }
+
+  if (!pp->pcap)
+    return err_closed();
 
   if (!PyArg_ParseTuple(args,"s:setfilter",&str))
     return NULL;
@@ -255,6 +307,9 @@ p_next(register pcapobject* pp, PyObject*)
     return NULL;
   }
 
+  if (!pp->pcap)
+    return err_closed();
+
   // allow threads as this might block
   Py_BEGIN_ALLOW_THREADS;
   err_code = pcap_next_ex(pp->pcap, &hdr, &buf);
@@ -277,8 +332,8 @@ p_next(register pcapobject* pp, PyObject*)
     Py_INCREF(pkthdr);
     _caplen = 0;
   }
-  
- 
+
+
   if (pkthdr)
   {
     PyObject *ret = NULL;
@@ -364,6 +419,9 @@ p_dispatch(register pcapobject* pp, PyObject* args)
       return NULL;
     }
 
+  if (!pp->pcap)
+    return err_closed();
+
   if(!PyArg_ParseTuple(args,"iO:dispatch",&cant,&PyFunc))
     return NULL;
 
@@ -391,6 +449,9 @@ p_stats(register pcapobject* pp, PyObject*)
 	   return NULL;
 	 }
 
+  if (!pp->pcap)
+    return err_closed();
+
   struct pcap_stat stats;
 
   if (-1 == pcap_stats(pp->pcap, &stats)) {
@@ -399,6 +460,22 @@ p_stats(register pcapobject* pp, PyObject*)
   }
 
 	return Py_BuildValue("III", stats.ps_recv, stats.ps_drop, stats.ps_ifdrop);
+}
+
+static PyObject*
+p__enter__( register pcapobject* pp, PyObject*)
+{
+  if (Py_TYPE(pp) != &Pcaptype)
+    {
+      PyErr_SetString(PcapError, "Not a pcap object");
+      return NULL;
+    }
+
+  if (!pp->pcap)
+    return err_closed();
+
+  Py_INCREF(pp);
+  return (PyObject*)pp;
 }
 
 static PyObject*
@@ -412,6 +489,9 @@ p_dump_open(register pcapobject* pp, PyObject* args)
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
     }
+
+  if (!pp->pcap)
+    return err_closed();
 
   if(!PyArg_ParseTuple(args,"s",&filename))
     return NULL;
@@ -438,6 +518,9 @@ p_loop(register pcapobject* pp, PyObject* args)
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
     }
+
+  if (!pp->pcap)
+    return err_closed();
 
   if(!PyArg_ParseTuple(args,"iO:loop",&cant,&PyFunc))
     return NULL;
@@ -467,6 +550,9 @@ p_datalink(register pcapobject* pp, PyObject* args)
 		return NULL;
 	}
 
+	if (!pp->pcap)
+		return err_closed();
+
 	int type = pcap_datalink(pp->pcap);
 
 	return Py_BuildValue("i", type);
@@ -479,6 +565,9 @@ p_setnonblock(register pcapobject* pp, PyObject* args)
 		PyErr_SetString(PcapError, "Not a pcap object");
 		return NULL;
 	}
+
+	if (!pp->pcap)
+		return err_closed();
 
 	int state;
 
@@ -504,6 +593,9 @@ p_getnonblock(register pcapobject* pp, PyObject* args)
 		return NULL;
 	}
 
+	if (!pp->pcap)
+		return err_closed();
+
 	char errbuf[PCAP_ERRBUF_SIZE];
 	int state = pcap_getnonblock(pp->pcap, errbuf);
 	if (-1 == state) {
@@ -527,6 +619,9 @@ p_sendpacket(register pcapobject* pp, PyObject* args)
       return NULL;
     }
 
+  if (!pp->pcap)
+    return err_closed();
+
 #if PY_MAJOR_VERSION >= 3
   /* accept bytes */
   if (!PyArg_ParseTuple(args,"y#", &str, &length)) {
@@ -537,7 +632,7 @@ p_sendpacket(register pcapobject* pp, PyObject* args)
     return NULL;
   }
 #endif
-    
+
 
   status = pcap_sendpacket(pp->pcap, str, length);
   if (status)
@@ -560,7 +655,10 @@ p_getfd(register pcapobject* pp, PyObject* args)
       return NULL;
     }
 
-    int fd = pcap_get_selectable_fd(pp->pcap);
-    return Py_BuildValue("i", fd);
+  if (!pp->pcap)
+    return err_closed();
+
+  int fd = pcap_get_selectable_fd(pp->pcap);
+  return Py_BuildValue("i", fd);
 }
 #endif
