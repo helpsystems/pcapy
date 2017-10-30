@@ -649,7 +649,7 @@ p_sendpacket(register pcapobject* pp, PyObject* args)
 static PyObject*
 p_getfd(register pcapobject* pp, PyObject* args)
 {
-  if (pp->ob_type != &Pcaptype)
+  if (Py_TYPE(pp) != &Pcaptype)
     {
       PyErr_SetString(PcapError, "Not a pcap object");
       return NULL;
