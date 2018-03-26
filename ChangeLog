@@ -1,3 +1,8 @@
+2018-03-26 Alberto Solino <asolino@coresecurity.com>
+    * Version 0.11.2 tagged with the following substantial changes (since version 0.11.11):
+        * Exporting pcap_get_selectable_fd as getfd (by @geekhckr)
+        * Add a close method & context manager to Reader (by @segevfiner)
+
 2017-01-16 Martin Balao <mbalao@coresecurity.com>
     * Version 0.11.1 tagged with the following changes (since version 0.10.10):
         * AppVeyor integration (continuous integration service)
