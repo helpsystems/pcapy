@@ -66,7 +66,7 @@ sysconfig._init_posix = my_init_posix
 
 
 setup(name=PACKAGE_NAME,
-      version="0.11.1",
+      version="0.11.2",
       url="https://github.com/CoreSecurity/pcapy",
       author="CORE Security",
       author_email="oss@coresecurity.com",
