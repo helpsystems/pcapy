@@ -2,6 +2,7 @@
 
 import sys
 import os
+import glob
 from setuptools import setup, Extension
 
 PACKAGE_NAME = 'pcapy'
@@ -65,14 +66,19 @@ def my_init_posix():
 sysconfig._init_posix = my_init_posix
 
 
+def read(fname):
+    return open(os.path.join(os.path.dirname(__file__), fname)).read()
+
 setup(name=PACKAGE_NAME,
-      version="0.11.2",
+      version="0.11.3",
       url="https://github.com/CoreSecurity/pcapy",
       author="CORE Security",
       author_email="oss@coresecurity.com",
       maintainer="CORE Security",
       maintainer_email="oss@coresecurity.com",
+      platforms=["Unix", "Windows"],
       description="Python pcap extension",
+      long_description=read('README'),
       license="Apache modified",
       ext_modules=[Extension(
           name=PACKAGE_NAME,
@@ -81,9 +87,8 @@ setup(name=PACKAGE_NAME,
           include_dirs=include_dirs,
           library_dirs=library_dirs,
           libraries=libraries)],
-      # scripts=['tests/pcapytests.py', 'tests/96pings.pcap'],
+      #scripts=['tests/pcapytests.py', 'tests/96pings.pcap'],
       data_files=[
-          (os.path.join('share', 'doc', PACKAGE_NAME),
-              ['README', 'LICENSE', 'pcapy.html']),
-          (os.path.join('share', 'doc', PACKAGE_NAME, 'tests'), ['tests/pcapytests.py', 'tests/96pings.pcap'])]
+          (os.path.join('share', 'doc', PACKAGE_NAME), ['README', 'LICENSE', 'pcapy.html']),
+          (os.path.join('share', 'doc', PACKAGE_NAME, 'tests'), glob.glob('tests/*'))]
       )
