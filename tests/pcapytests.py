@@ -169,7 +169,7 @@ class TestPcapy(unittest.TestCase):
         result = str(len(code)) + "\n"
         result += "\n".join([' '.join(map(str, inst)) for inst in code])
 
-        assert result == expected
+        self.assertEqual(expected, result)
 
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestPcapy)
