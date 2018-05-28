@@ -147,6 +147,25 @@ class TestPcapy(unittest.TestCase):
         with self.assertRaises(ValueError):
             r.next()
 
+    def test_get_bpf(self):
+        bpf = pcapy.compile(pcapy.DLT_EN10MB, 2**16, "icmp", 1, 1)
+        code = bpf.get_bpf()
+
+        # result of `tcpdump "icmp" -ddd -s 65536` on EN10MB interface
+        expected = """6
+40 0 0 12
+21 0 3 2048
+48 0 0 23
+21 0 1 1
+6 0 0 65536
+6 0 0 0"""
+
+        result = str(len(code)) + "\n"
+        result += "\n".join([' '.join(map(str, inst)) for inst in code])
+
+        self.assertEqual(expected, result)
+
+
 suite = unittest.TestLoader().loadTestsFromTestCase(TestPcapy)
 result = unittest.TextTestRunner(verbosity=2).run(suite)
 if not result.wasSuccessful():
