@@ -102,6 +102,10 @@ open_live(PyObject *self, PyObject *args)
       return NULL;
     }
 #ifdef WIN32
+  //According to the doc
+  //      pcap_setmintocopy() changes the minimum amount of data in the kernel buffer that causes a read from the application to return (unless the timeout expires)
+  //      [...] pcap_open_live() sets a default mintocopy value of 16000 bytes.
+  //It is a better practice to set it to 0, so that we are transparent about what we receive
   pcap_setmintocopy(pt, 0);
 #endif
 
@@ -135,6 +139,10 @@ pcap_create(PyObject *self, PyObject *args)
 		PyErr_SetString(PcapError, errbuff);
 		return NULL;
 	}
+#ifdef WIN32
+  //Same than in open_live
+  pcap_setmintocopy(pt, 0);
+#endif
 
 	return new_pcapobject(pt, net, mask);
 }
