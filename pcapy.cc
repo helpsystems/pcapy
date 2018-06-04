@@ -102,10 +102,49 @@ open_live(PyObject *self, PyObject *args)
       return NULL;
     }
 #ifdef WIN32
+  //According to the doc
+  //      pcap_setmintocopy() changes the minimum amount of data in the kernel buffer that causes a read from the application to return (unless the timeout expires)
+  //      [...] pcap_open_live() sets a default mintocopy value of 16000 bytes.
+  //It is a better practice to set it to 0, so that we are transparent about what we receive
   pcap_setmintocopy(pt, 0);
 #endif
 
   return new_pcapobject( pt, net, mask );
+}
+
+static PyObject*
+pcap_create(PyObject *self, PyObject *args)
+{
+	char errbuff[PCAP_ERRBUF_SIZE];
+	char * device;
+
+	bpf_u_int32 net, mask;
+
+
+	if (!PyArg_ParseTuple(args, "s:pcap_create", &device))
+		return NULL;
+
+	int status = pcap_lookupnet(device, &net, &mask, errbuff);
+	if (status)
+	{
+		net = 0;
+		mask = 0;
+	}
+
+	pcap_t* pt;
+
+	pt = pcap_create(device, errbuff);
+	if (!pt)
+	{
+		PyErr_SetString(PcapError, errbuff);
+		return NULL;
+	}
+#ifdef WIN32
+  //Same than in open_live
+  pcap_setmintocopy(pt, 0);
+#endif
+
+	return new_pcapobject(pt, net, mask);
 }
 
 static PyObject*
@@ -178,6 +217,7 @@ static PyMethodDef pcap_methods[] = {
   {"lookupdev", lookupdev, METH_VARARGS, "lookupdev() looks up a pcap device"},
   {"findalldevs", findalldevs, METH_VARARGS, "findalldevs() lists all available interfaces"},
   {"compile", bpf_compile, METH_VARARGS, "compile(linktype, snaplen, filter, optimize, netmask) creates a bpfprogram object"},
+  {"create", pcap_create, METH_VARARGS, "create(device) is used to create a packet capture handle to look at packets on the network."},
   {NULL, NULL}
 };
 
