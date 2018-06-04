@@ -29,6 +29,8 @@ https://github.com/CoreSecurity/pcapy.
 Grab the latest stable release, unpack it and run 'python setup.py
 install' from the directory where you placed it. Isn't that easy?
 
+### [Documentation](https://rawgit.com/CoreSecurity/pcapy/master/pcapy.html) ###
+
 ### Requirements ###
 
  * A Python interpreter. Versions 2.1.3 and newer are known to work.
