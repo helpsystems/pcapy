@@ -52,7 +52,9 @@ bpfprog_getattr(bpfobject* pp, char* name)
 {
 #if PY_MAJOR_VERSION >= 3
   PyObject *nameobj = PyUnicode_FromString(name);
-  return PyObject_GenericGetAttr((PyObject *)pp, nameobj);
+  PyObject *attr = PyObject_GenericGetAttr((PyObject *)pp, nameobj);
+  Py_DECREF(nameobj);
+  return attr;
 #else
   return Py_FindMethod(bpf_methods, (PyObject*)pp, name);
 #endif
