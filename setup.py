@@ -1,5 +1,3 @@
-# $Id: setup.py 47 2010-08-25 19:07:28Z aweil $
-
 import sys
 import os
 import glob
@@ -70,7 +68,7 @@ def read(fname):
     return open(os.path.join(os.path.dirname(__file__), fname)).read()
 
 setup(name=PACKAGE_NAME,
-      version="0.11.3",
+      version="0.11.4",
       url="https://github.com/CoreSecurity/pcapy",
       author="CORE Security",
       author_email="oss@coresecurity.com",
