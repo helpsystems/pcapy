@@ -231,7 +231,7 @@ static PyMethodDef pcap_methods[] = {
   {"findalldevs", findalldevs, METH_VARARGS, "findalldevs() lists all available interfaces"},
   {"compile", bpf_compile, METH_VARARGS, "compile(linktype, snaplen, filter, optimize, netmask) creates a bpfprogram object"},
   {"create", pcap_create, METH_VARARGS, "create(device) is used to create a packet capture handle to look at packets on the network."},
-  {"statustostring", pcap_statustostr, METH_VARARGS, "statustostr(error) is used to convert a PCAP_ERROR or PCAP_WARNING to a string"},
+  {"statustostr", pcap_statustostr, METH_VARARGS, "statustostr(error) is used to convert a PCAP_ERROR or PCAP_WARNING to a string"},
   {NULL, NULL}
 };
 
