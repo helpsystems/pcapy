@@ -7,13 +7,13 @@ python:
   - 3.6
 addons:
   apt:
-    packages:
-      - libpcap-dev
+    packages: libpcap-dev
+  homebrew:
+    packages: libpcap
 matrix:
   include:
     - os: osx
       language: generic
-      install: brew install libpcap
     - os: linux
       dist: trusty
   allow_failures:
