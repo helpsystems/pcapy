@@ -67,6 +67,7 @@ static PyObject* p_next(register pcapobject* pp, PyObject*);
 static PyObject* p_dispatch(register pcapobject* pp, PyObject* args);
 static PyObject* p_loop(register pcapobject* pp, PyObject* args);
 static PyObject* p_datalink(register pcapobject* pp, PyObject* args);
+static PyObject* p_setdirection(register pcapobject* pp, PyObject* args);
 static PyObject* p_setnonblock(register pcapobject* pp, PyObject* args);
 static PyObject* p_getnonblock(register pcapobject* pp, PyObject* args);
 static PyObject* p_dump_open(register pcapobject* pp, PyObject* args);
@@ -91,6 +92,7 @@ static PyMethodDef p_methods[] = {
   {"datalink", (PyCFunction) p_datalink, METH_VARARGS, "returns the link layer type"},
   {"getnonblock", (PyCFunction) p_getnonblock, METH_VARARGS, "returns the current `non-blocking' state"},
   {"setnonblock", (PyCFunction) p_setnonblock, METH_VARARGS, "puts into `non-blocking' mode, or take it out, depending on the argument"},
+  {"setdirection", (PyCFunction) p_setdirection, METH_VARARGS, "set the direction for which packets will be captured"},
   {"dump_open", (PyCFunction) p_dump_open, METH_VARARGS, "creates a dumper object"},
   {"sendpacket", (PyCFunction) p_sendpacket, METH_VARARGS, "sends a packet through the interface"},
   {"stats", (PyCFunction) p_stats, METH_NOARGS, "returns capture statistics"},
@@ -570,6 +572,32 @@ p_datalink(register pcapobject* pp, PyObject* args)
 	int type = pcap_datalink(pp->pcap);
 
 	return Py_BuildValue("i", type);
+}
+
+static PyObject*
+p_setdirection(register pcapobject* pp, PyObject* args)
+{
+	if (Py_TYPE(pp) != &Pcaptype) {
+		PyErr_SetString(PcapError, "Not a pcap object");
+		return NULL;
+	}
+
+	if (!pp->pcap)
+		return err_closed();
+
+	pcap_direction_t direction;
+
+	if (!PyArg_ParseTuple(args, "i", &direction))
+		return NULL;
+
+	int ret = pcap_setdirection(pp->pcap, direction);
+	if (-1 == ret) {
+		PyErr_SetString(PcapError, "Failed setting direction");
+		return NULL;
+	}
+
+	Py_INCREF(Py_None);
+	return Py_None;
 }
 
 static PyObject*
