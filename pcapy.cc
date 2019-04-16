@@ -148,6 +148,107 @@ pcap_create(PyObject *self, PyObject *args)
 }
 
 static PyObject*
+open_live_handle(PyObject *self, PyObject *args)
+{
+    char errbuff[PCAP_ERRBUF_SIZE];
+    char * device;
+    int  snaplen;
+    PyObject *promisc = Py_True;
+    int  to_ms;
+    PyObject  *immediate_mode = Py_True;
+    PyObject  *enable_rf_mon = Py_False;
+    int  direction;
+    PyObject *non_block = Py_True;
+    int tstamp_type;
+    int tstamp_precision;
+
+    bpf_u_int32 net, mask;
+
+    if(!PyArg_ParseTuple(args, "siOiOOiOii:open_live_handle"
+            , &device
+            , &snaplen
+            , &promisc
+            , &to_ms
+            , &immediate_mode
+            , &enable_rf_mon
+            , &direction
+            , &non_block
+            , &tstamp_type
+            , &tstamp_precision))
+        return NULL;
+
+    if (device == NULL
+        || snaplen > 262144 // MAXIMUM_SNAPLEN (pcap-int.h)
+        || (direction < 0 && direction > 2)
+        || (tstamp_type < 0 && direction > 1)
+        || (tstamp_precision < 0 && tstamp_precision > 4))
+    {
+        PyErr_SetString(PcapError, "Illegal argument exception.");
+        return NULL;
+    }
+
+    int status = pcap_lookupnet(device, &net, &mask, errbuff);
+    if(status)
+    {
+        net = 0;
+        mask = 0;
+    }
+
+    pcap_t* pt;
+    pt = pcap_create(device, errbuff);
+    if(!pt)
+    {
+        PyErr_SetString(PcapError, errbuff);
+        return NULL;
+    }
+    pcap_set_snaplen(pt, snaplen);
+    pcap_set_promisc(pt, PyObject_IsTrue(promisc));
+    pcap_set_timeout(pt, to_ms);
+#ifdef WIN32
+    pcap_setmintocopy(pt, 0);
+#else
+    pcap_set_immediate_mode(pt, PyObject_IsTrue(immediate_mode));
+    pcap_set_tstamp_type(pt, tstamp_type);
+    pcap_set_tstamp_precision(pt, tstamp_precision);
+    if (PyObject_IsTrue(enable_rf_mon))
+    {
+        if (pcap_can_set_rfmon(pt))
+        {
+            pcap_set_rfmon(pt, 1);
+        }
+    } else
+    {
+        pcap_set_rfmon(pt, 0);
+    }
+#endif
+    if (pcap_activate(pt) != 0)
+    {
+        PyErr_SetString(PcapError, errbuff);
+        return NULL;
+    }
+#ifndef WIN32
+    if (direction == 0)
+    {
+        pcap_setdirection(pt, PCAP_D_INOUT);
+    } else if (direction == 1)
+    {
+        pcap_setdirection(pt, PCAP_D_IN);
+    } else
+    {
+        pcap_setdirection(pt, PCAP_D_OUT);
+    }
+#endif
+    if (PyObject_IsTrue(non_block))
+    {
+        pcap_setnonblock(pt, 1, errbuff);
+    } else
+    {
+        pcap_setnonblock(pt, 0, errbuff);
+    }
+    return new_pcapobject( pt, net, mask );
+}
+
+static PyObject*
 open_offline(PyObject *self, PyObject *args)
 {
   char errbuff[PCAP_ERRBUF_SIZE];
@@ -213,6 +314,7 @@ bpf_compile(PyObject* self, PyObject* args)
 
 static PyMethodDef pcap_methods[] = {
   {"open_live", open_live, METH_VARARGS, "open_live(device, snaplen, promisc, to_ms) opens a pcap device"},
+  {"open_live_handle", open_live_handle, METH_VARARGS, "open_live_handle(device, snaplen, promisc, to_ms, immediate_mode, enable_rfmon, direction, non_block, tstamp_type, tstamp_precision)"},
   {"open_offline", open_offline, METH_VARARGS, "open_offline(filename) opens a pcap formated file"},
   {"lookupdev", lookupdev, METH_VARARGS, "lookupdev() looks up a pcap device"},
   {"findalldevs", findalldevs, METH_VARARGS, "findalldevs() lists all available interfaces"},
