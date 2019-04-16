@@ -102,6 +102,10 @@ open_live(PyObject *self, PyObject *args)
       return NULL;
     }
 #ifdef WIN32
+  //According to the doc
+  //      pcap_setmintocopy() changes the minimum amount of data in the kernel buffer that causes a read from the application to return (unless the timeout expires)
+  //      [...] pcap_open_live() sets a default mintocopy value of 16000 bytes.
+  //It is a better practice to set it to 0, so that we are transparent about what we receive
   pcap_setmintocopy(pt, 0);
 #endif
 
@@ -109,92 +113,38 @@ open_live(PyObject *self, PyObject *args)
 }
 
 static PyObject*
-open_live_handle(PyObject *self, PyObject *args)
+pcap_create(PyObject *self, PyObject *args)
 {
-    char errbuff[PCAP_ERRBUF_SIZE];
-    char * device;
-    int  snaplen;
-    PyObject *promisc = Py_True;
-    int  to_ms;
-    PyObject  *immediate_mode = Py_True;
-    PyObject  *enable_rf_mon = Py_False;
-    int  direction;
-    PyObject *non_block = Py_True;
-    int tstamp_type;
-    int tstamp_precision;
+	char errbuff[PCAP_ERRBUF_SIZE];
+	char * device;
 
-    bpf_u_int32 net, mask;
+	bpf_u_int32 net, mask;
 
-    if(!PyArg_ParseTuple(args, "siOiOOiOii:open_live_handle"
-            , &device
-            , &snaplen
-            , &promisc
-            , &to_ms
-            , &immediate_mode
-            , &enable_rf_mon
-            , &direction
-            , &non_block
-            , &tstamp_type
-            , &tstamp_precision))
-        return NULL;
 
-    if (device == NULL
-        || snaplen > 262144 // MAXIMUM_SNAPLEN (pcap-int.h)
-        || (direction < 0 && direction > 2)
-        || (tstamp_type < 0 && direction > 1)
-        || (tstamp_precision < 0 && tstamp_precision > 4)) {
-        PyErr_SetString(PcapError, "Illegal argument exception.");
-        return NULL;
-    }
+	if (!PyArg_ParseTuple(args, "s:pcap_create", &device))
+		return NULL;
 
-    int status = pcap_lookupnet(device, &net, &mask, errbuff);
-    if(status)
-    {
-        net = 0;
-        mask = 0;
-    }
+	int status = pcap_lookupnet(device, &net, &mask, errbuff);
+	if (status)
+	{
+		net = 0;
+		mask = 0;
+	}
 
-    pcap_t* pt;
-    pt = pcap_create(device, errbuff);
-    if(!pt)
-    {
-        PyErr_SetString(PcapError, errbuff);
-        return NULL;
-    }
-    pcap_set_snaplen(pt, snaplen);
-    pcap_set_promisc(pt, PyObject_IsTrue(promisc));
-    pcap_set_timeout(pt, to_ms);
+	pcap_t* pt;
+
+	pt = pcap_create(device, errbuff);
+	if (!pt)
+	{
+		PyErr_SetString(PcapError, errbuff);
+		return NULL;
+	}
 #ifdef WIN32
-    pcap_setmintocopy(pt, 0);
-#else
-    pcap_set_immediate_mode(pt, PyObject_IsTrue(immediate_mode));
-    pcap_set_tstamp_type(pt, tstamp_type);
-    pcap_set_tstamp_precision(pt, tstamp_precision);
-    if (PyObject_IsTrue(enable_rf_mon)) {
-        if (pcap_can_set_rfmon(pt)) {
-            pcap_set_rfmon(pt, 1);
-        }
-    } else {
-        pcap_set_rfmon(pt, 0);
-    }
+  //Same than in open_live
+  pcap_setmintocopy(pt, 0);
 #endif
-    if (pcap_activate(pt) != 0) {
-        PyErr_SetString(PcapError, errbuff);
-        return NULL;
-    }
-    if (direction == 0) {
-        pcap_setdirection(pt, PCAP_D_INOUT);
-    } else if (direction == 1) {
-        pcap_setdirection(pt, PCAP_D_IN);
-    } else {
-        pcap_setdirection(pt, PCAP_D_OUT);
-    }
-    if (PyObject_IsTrue(non_block)) {
-        pcap_setnonblock(pt, 1, errbuff);
-    } else {
-        pcap_setnonblock(pt, 0, errbuff);
-    }
-    return new_pcapobject( pt, net, mask );
+
+	return new_pcapobject(pt, net, mask);
 }
 
 static PyObject*
@@ -268,6 +218,7 @@ static PyMethodDef pcap_methods[] = {
   {"lookupdev", lookupdev, METH_VARARGS, "lookupdev() looks up a pcap device"},
   {"findalldevs", findalldevs, METH_VARARGS, "findalldevs() lists all available interfaces"},
   {"compile", bpf_compile, METH_VARARGS, "compile(linktype, snaplen, filter, optimize, netmask) creates a bpfprogram object"},
+  {"create", pcap_create, METH_VARARGS, "create(device) is used to create a packet capture handle to look at packets on the network."},
   {NULL, NULL}
 };
 

@@ -6,7 +6,7 @@
 <part>
   <partinfo>
     <copyright>
-      <year>2016</year>
+      <year>2016-2018</year>
       <holder>&corest;</holder>
     </copyright>
     <corpauthor>&corest;</corpauthor>
@@ -18,10 +18,10 @@
     </keywordset>
     <revhistory>
       <revision>
-        <revnumber>Revision: 15</revnumber>
-        <date>Date: 2003-10-23</date>
+        <revnumber>Revision: 16</revnumber>
+        <date>Date: 2018-06-04</date>
         <authorinitials>Author: jkohen</authorinitials>
-        <revremark>Initial revision</revremark>
+        <revremark>2018 updated</revremark>
       </revision>
     </revhistory>
   </partinfo>
@@ -235,6 +235,38 @@
         </para>
       </refsect1>
     </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>create</refname>
+        <refpurpose>Creates a non-activated packet capture handle to look at packets on the network</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              Reader  <function>create</function>
+            </funcdef>
+            <paramdef>
+              string <parameter>device</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>create</function> is used to create a 
+          packet capture handle to look at packets on the network.
+          The returned handle must be activated with
+          <function>activate()</function> before packets can be captured
+          with it; options for the capture, such as promiscuous mode,
+          can be set on the handle before activating it.
+        </para>
+      </refsect1>
+    </refentry>
   </reference>
 
   <reference>
@@ -417,6 +449,205 @@
         <para>
           <function>setfilter</function> is used to specify a filter
           for this object.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>getfd</refname>
+        <refpurpose>get a file descriptor on which a select() can be
+        done for a live capture</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>getfd</function>
+            </funcdef>
+            <paramdef>
+              string <parameter>filter</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>getfd</function> returns, on UNIX, a file descriptor
+          number for a file descriptor on which one can do a select(),
+          poll(), epoll_wait(), kevent(), or other such call to wait
+          for it to be possible to read packets without blocking, if
+          such a descriptor exists, or -1, if no such descriptor exists.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>set_snaplen</refname>
+        <refpurpose>Set the snapshot length for a not-yet-activated
+        capture handle</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>set_snaplen</function>
+            </funcdef>
+            <paramdef>
+              int <parameter>snaplen</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>set_snaplen</function> sets the snapshot length
+          to be used on a capture handle when the handle is activated
+          to snaplen.
+          <function>set_snaplen</function> returns 0 on success
+          or PCAP_ERROR_ACTIVATED if called on a capture handle that
+          has been activated.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>set_promisc</refname>
+        <refpurpose>Set promiscuous mode for a not-yet-activated
+        capture handle</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>set_promisc</function>
+            </funcdef>
+            <paramdef>
+              int <parameter>promisc</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>set_promisc</function> sets whether promiscuous mode
+          should be set on a capture handle when the handle is activated.
+          If promisc is non-zero, promiscuous mode will be set, otherwise
+          it will not be set.
+          <function>set_promisc</function> returns 0 on success
+          or PCAP_ERROR_ACTIVATED if called on a capture handle that
+          has been activated.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>set_timeout</refname>
+        <refpurpose>Set the read timeout for a not-yet-activated
+        capture handle</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>set_timeout</function>
+            </funcdef>
+            <paramdef>
+              int <parameter>timeout</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>set_timeout</function> sets the read timeout
+          that will be used on a capture handle when the handle
+          is activated to to_ms, which is in units of milliseconds.
+          <function>set_timeout</function> returns 0 on success
+          or PCAP_ERROR_ACTIVATED if called on a capture handle that
+          has been activated.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>set_buffer_size</refname>
+        <refpurpose>Set the buffer size for a not-yet-activated capture handle
+        capture handle</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>set_buffer_size</function>
+            </funcdef>
+            <paramdef>
+              int <parameter>buffer_size</parameter>
+            </paramdef>
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>set_buffer_size</function> sets the buffer size
+          that will be used on a capture handle when the handle is
+          activated to buffer_size, which is in units of bytes.
+          <function>set_buffer_size</function> returns 0 on success
+          or PCAP_ERROR_ACTIVATED if called on a capture handle that
+          has been activated.
+        </para>
+      </refsect1>
+    </refentry>
+
+    <refentry>
+      <refnamediv>
+        <refname>activate</refname>
+        <refpurpose>Activate a capture handle</refpurpose>
+      </refnamediv>
+
+      <refsynopsisdiv>
+        <funcsynopsis>
+          <funcprototype>
+            <funcdef>
+              int <function>activate</function>
+            </funcdef>
+            <void />
+          </funcprototype>
+        </funcsynopsis>
+      </refsynopsisdiv>
+
+      <refsect1>
+        <title>DESCRIPTION</title>
+        <para>
+          <function>activate</function> is used to activate a
+          packet capture handle to look at packets on the network,
+          with the options that were set on the handle being in effect.
+          <function>activate</function> returns 0 on success without
+          warnings, a non-zero positive value on success with warnings,
+          and a negative value on error. A non-zero return value indicates
+          what warning or error condition occurred.
+          has been activated.
+          See https://www.tcpdump.org/manpages/pcap_activate.3pcap.html for
+          all possible return values.
         </para>
       </refsect1>
     </refentry>
@@ -876,8 +1107,7 @@
 
     <refentry>
       <refnamediv>
-        <refname>getnonblock</refname>
-        <refname>setnonblock</refname>
+        <refname>getnonblock / setnonblock</refname>
         <refpurpose>
           Manipulate the
           <firstterm>non-blocking</firstterm> flag
@@ -967,6 +1197,32 @@
         </para>
       </refsect1>
     </refentry>
+
+    <refentry>
+        <refnamediv>
+            <refname>close</refname>
+            <refpurpose>
+                Close a Reader
+            </refpurpose>
+        </refnamediv>
+        <refsynopsisdiv>
+            <funcsynopsis>
+              <funcprototype>
+                <funcdef>
+                  Reader <function>close</function>
+                </funcdef>
+                <void/>
+              </funcprototype>
+            </funcsynopsis>
+        </refsynopsisdiv>
+        <refsect1>
+            <title>DESCRIPTION</title>
+            <para>
+              <function>close</function> closes a <classname>Reader</classname> using pcap_close.
+            </para>
+        </refsect1>
+    </refentry>
+
   </reference>
 
   <reference>

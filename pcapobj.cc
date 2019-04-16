@@ -74,6 +74,12 @@ static PyObject* p_sendpacket(register pcapobject* pp, PyObject* args);
 static PyObject* p_stats( register pcapobject* pp, PyObject*);
 static PyObject* p__enter__( register pcapobject* pp, PyObject*);
 static PyObject* p_getfd(register pcapobject* pp, PyObject* args);
+static PyObject* p_set_snaplen(register pcapobject* pp, PyObject* args);
+static PyObject* p_set_promisc(register pcapobject* pp, PyObject* args);
+static PyObject* p_set_timeout(register pcapobject* pp, PyObject* args);
+static PyObject* p_set_buffer_size(register pcapobject* pp, PyObject* args);
+static PyObject* p_set_rfmon(register pcapobject* pp, PyObject* args);
+static PyObject* p_activate(register pcapobject* pp, PyObject* args);
 
 static PyMethodDef p_methods[] = {
   {"loop", (PyCFunction) p_loop, METH_VARARGS, "loops packet dispatching"},
@@ -89,10 +95,16 @@ static PyMethodDef p_methods[] = {
   {"sendpacket", (PyCFunction) p_sendpacket, METH_VARARGS, "sends a packet through the interface"},
   {"stats", (PyCFunction) p_stats, METH_NOARGS, "returns capture statistics"},
   {"close", (PyCFunction) p_close, METH_NOARGS, "close the capture"},
+  {"set_snaplen", (PyCFunction)p_set_snaplen, METH_VARARGS, "set the snapshot length for a not-yet-activated capture handle"},
+  {"set_promisc", (PyCFunction)p_set_promisc, METH_VARARGS, "set promiscuous mode for a not-yet-activated capture handle"},
+  {"set_timeout", (PyCFunction)p_set_timeout, METH_VARARGS, "set the read timeout for a not-yet-activated capture handle"},
+  {"set_buffer_size", (PyCFunction)p_set_buffer_size, METH_VARARGS, "set the buffer size for a not-yet-activated capture handle"},
+  {"activate", (PyCFunction)p_activate, METH_NOARGS, "activate a capture handle created using create()"},
   {"__enter__", (PyCFunction) p__enter__, METH_NOARGS, NULL},
   {"__exit__", (PyCFunction) p_close, METH_VARARGS, NULL},
 #ifndef WIN32
   {"getfd", (PyCFunction) p_getfd, METH_VARARGS, "get selectable pcap fd"},
+  {"set_rfmon", (PyCFunction)p_set_rfmon, METH_VARARGS, "set monitor mode for a not-yet-activated capture handle"}, /* Available on Npcap, not on Winpcap. */
 #endif
   {NULL, NULL}	/* sentinel */
 };
@@ -101,8 +113,10 @@ static PyObject*
 pcap_getattr(pcapobject* pp, char* name)
 {
 #if PY_MAJOR_VERSION >= 3
-	PyObject *nameobj = PyUnicode_FromString(name);
-	return PyObject_GenericGetAttr((PyObject *)pp, nameobj);
+  PyObject *nameobj = PyUnicode_FromString(name);
+  PyObject *attr = PyObject_GenericGetAttr((PyObject *)pp, nameobj);
+  Py_DECREF(nameobj);
+  return attr;
 #else
   return Py_FindMethod(p_methods, (PyObject*)pp, name);
 #endif
@@ -605,6 +619,122 @@ p_getnonblock(register pcapobject* pp, PyObject* args)
 
 	return Py_BuildValue("i", state);
 }
+
+static PyObject*
+p_set_snaplen(register pcapobject* pp, PyObject* args)
+{
+	if (Py_TYPE(pp) != &Pcaptype) {
+		PyErr_SetString(PcapError, "Not a pcap object");
+		return NULL;
+	}
+
+	if (!pp->pcap)
+		return err_closed();
+
+	int snaplen;
+
+	if (!PyArg_ParseTuple(args, "i", &snaplen))
+		return NULL;
+
+	int ret = pcap_set_snaplen(pp->pcap, snaplen);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject*
+p_set_promisc(register pcapobject* pp, PyObject* args)
+{
+	if (Py_TYPE(pp) != &Pcaptype) {
+		PyErr_SetString(PcapError, "Not a pcap object");
+		return NULL;
+	}
+
+	if (!pp->pcap)
+		return err_closed();
+
+	int promisc;
+
+	if (!PyArg_ParseTuple(args, "i", &promisc))
+		return NULL;
+
+	int ret = pcap_set_promisc(pp->pcap, promisc);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject*
+p_set_timeout(register pcapobject* pp, PyObject* args)
+{
+	if (Py_TYPE(pp) != &Pcaptype) {
+		PyErr_SetString(PcapError, "Not a pcap object");
+		return NULL;
+	}
+
+	if (!pp->pcap)
+		return err_closed();
+
+	int to_ms;
+
+	if (!PyArg_ParseTuple(args, "i", &to_ms))
+		return NULL;
+
+	int ret = pcap_set_timeout(pp->pcap, to_ms);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject*
+p_set_buffer_size(register pcapobject* pp, PyObject* args)
+{
+	if (Py_TYPE(pp) != &Pcaptype) {
+		PyErr_SetString(PcapError, "Not a pcap object");
+		return NULL;
+	}
+
+	if (!pp->pcap)
+		return err_closed();
+
+	int buffer_size;
+
+	if (!PyArg_ParseTuple(args, "i", &buffer_size))
+		return NULL;
+
+	int ret = pcap_set_buffer_size(pp->pcap, buffer_size);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject*
+p_set_rfmon(register pcapobject* pp, PyObject* args)
+{
+	if (Py_TYPE(pp) != &Pcaptype) {
+		PyErr_SetString(PcapError, "Not a pcap object");
+		return NULL;
+	}
+
+	if (!pp->pcap)
+		return err_closed();
+
+	int rfmon;
+
+	if (!PyArg_ParseTuple(args, "i", &rfmon))
+		return NULL;
+
+	int ret = pcap_set_rfmon(pp->pcap, rfmon);
+	return Py_BuildValue("i", ret);
+}
+
+static PyObject*
+p_activate(register pcapobject* pp, PyObject*)
+{
+	if (Py_TYPE(pp) != &Pcaptype) {
+		PyErr_SetString(PcapError, "Not a pcap object");
+		return NULL;
+	}
+
+	if (!pp->pcap)
+		return err_closed();
+
+	int ret = pcap_activate(pp->pcap);
+	return Py_BuildValue("i", ret);
+}
+
 
 static PyObject*
 p_sendpacket(register pcapobject* pp, PyObject* args)

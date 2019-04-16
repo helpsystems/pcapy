@@ -1,3 +1,9 @@
+2018-06-17 Alberto Solino <asolino@coresecurity.com>
+    * Version 0.11.4 tagged with the following changes 
+        * bpfobject support get_bpf method (by @palaviv)
+        * Monitor mode support & missing methods fix (by @gpotter2)
+        * Documentation update (@gpotter2)
+
 2018-03-26 Alberto Solino <asolino@coresecurity.com>
     * Version 0.11.2 tagged with the following substantial changes (since version 0.11.11):
         * Exporting pcap_get_selectable_fd as getfd (by @geekhckr)

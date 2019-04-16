@@ -37,11 +37,13 @@ PyObject* BPFError;
 
 // BPFProgram methods
 static PyObject* p_filter(register bpfobject* bpf, PyObject* args);
+static PyObject* p_get_bpf(register bpfobject* bpf, PyObject* args);
 static PyObject* p_new_bpfobject(PyTypeObject *type, PyObject* args, PyObject *kwags);
 
 
 static PyMethodDef bpf_methods[] = {
   {"filter", (PyCFunction) p_filter, METH_VARARGS, "filter(packet) applies the filter to the packet, returns 0 if there's no match"},
+  {"get_bpf", (PyCFunction) p_get_bpf, METH_NOARGS, "return packet-matching code as decimal numbers"},
   {NULL, NULL}	/* sentinel */
 };
 
@@ -50,7 +52,9 @@ bpfprog_getattr(bpfobject* pp, char* name)
 {
 #if PY_MAJOR_VERSION >= 3
   PyObject *nameobj = PyUnicode_FromString(name);
-  return PyObject_GenericGetAttr((PyObject *)pp, nameobj);
+  PyObject *attr = PyObject_GenericGetAttr((PyObject *)pp, nameobj);
+  Py_DECREF(nameobj);
+  return attr;
 #else
   return Py_FindMethod(bpf_methods, (PyObject*)pp, name);
 #endif
@@ -210,4 +214,38 @@ p_filter(register bpfobject* bpf, PyObject* args)
 		      len, len);
 
   return Py_BuildValue("i", status);
+}
+
+static PyObject*
+p_get_bpf(register bpfobject* bpf, PyObject* args)
+{
+  struct bpf_insn *insn;
+  int i;
+  int n = bpf->bpf.bf_len;
+  PyObject* list;
+  PyObject* instruction;
+
+  insn = bpf->bpf.bf_insns;
+
+  if (Py_TYPE(bpf) != &BPFProgramType)
+    {
+      PyErr_SetString(BPFError, "Not a bpfprogram object");
+      return NULL;
+    }
+
+  list = PyList_New(n);
+  if (!list) {
+      return NULL;
+  }
+
+  for (i = 0; i < n; ++insn, ++i) {
+      instruction = Py_BuildValue("IIII", insn->code, insn->jt, insn->jf, insn->k);
+      if (!instruction) {
+          Py_DECREF(list);
+          return NULL;
+      }
+      PyList_SET_ITEM(list, i, instruction);
+  }
+
+  return list;
 }
