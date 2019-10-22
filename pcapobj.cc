@@ -760,9 +760,13 @@ p_activate(register pcapobject* pp, PyObject*)
 		return err_closed();
 
 	int ret = pcap_activate(pp->pcap);
+	if (ret)
+	{
+		PyErr_SetString(PcapError, pcap_geterr(pp->pcap));
+		return NULL;
+	}
 	return Py_BuildValue("i", ret);
 }
-
 
 static PyObject*
 p_sendpacket(register pcapobject* pp, PyObject* args)

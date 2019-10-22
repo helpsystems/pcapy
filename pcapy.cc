@@ -232,6 +232,19 @@ bpf_compile(PyObject* self, PyObject* args)
   return new_bpfobject( bpf );
 }
 
+static PyObject*
+pcap_statustostr(PyObject *self, PyObject *args)
+{
+	const char * status;
+	int error;
+
+	if (!PyArg_ParseTuple(args, "i:pcap_statustostr", &error))
+		return NULL;
+
+	status = pcap_statustostr(error);
+
+	return Py_BuildValue("s", status);
+}
 
 static PyMethodDef pcap_methods[] = {
   {"open_live", open_live, METH_VARARGS, "open_live(device, snaplen, promisc, to_ms) opens a pcap device"},
@@ -240,6 +253,7 @@ static PyMethodDef pcap_methods[] = {
   {"findalldevs", findalldevs, METH_VARARGS, "findalldevs() lists all available interfaces"},
   {"compile", bpf_compile, METH_VARARGS, "compile(linktype, snaplen, filter, optimize, netmask) creates a bpfprogram object"},
   {"create", pcap_create, METH_VARARGS, "create(device) is used to create a packet capture handle to look at packets on the network."},
+  {"statustostr", pcap_statustostr, METH_VARARGS, "statustostr(error) is used to convert a PCAP_ERROR or PCAP_WARNING to a string"},
   {NULL, NULL}
 };
 
