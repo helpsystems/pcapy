@@ -21,7 +21,8 @@ static char* luid_to_guid(char *luid);
 #endif
 
 #if PY_MAJOR_VERSION >= 3
-PyObject * PyInit_pcapy(void);
+PyMODINIT_FUNC
+PyInit_pcapy(void);
 #else
 void initpcapy(void);
 #endif
