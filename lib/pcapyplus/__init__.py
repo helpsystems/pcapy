@@ -19,7 +19,13 @@
 pcapyplus module entry point.
 """
 
-from ._pcapyplus import findalldevs
+from ._pcapyplus import (
+    open_live,
+    open_offline,
+    findalldevs,
+    compile,
+    create,
+)
 
 __author__ = 'Hewlett Packard Enterprise Development LP'
 __email__ = 'sdk_tools_frameworks@groups.ext.hpe.com'
@@ -37,3 +43,13 @@ def lookupdev():
         Callers should use pcap_findalldevs() and use the first device.
     """
     return findalldevs()[0]
+
+
+__all__ = [
+    'open_live',
+    'open_offline',
+    'lookupdev',
+    'findalldevs',
+    'compile',
+    'create',
+]
