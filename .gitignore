@@ -1,6 +1,20 @@
-*.py[co]
+# Python
+__pycache__
 *.so
-*.pyd
+
+# Packages
+dist/*
+build/*
 *.egg-info
-/build/
-/dist/
+
+# Sphinx
+doc/pcapyplus/*
+
+# Tox
+.tox/*
+.cache/*
+.coverage
+.pytest_cache
+
+# Misc
+*~

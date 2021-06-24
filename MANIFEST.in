@@ -1,7 +1,2 @@
-include MANIFEST.in
-include LICENSE
-include ChangeLog
-include pcapy.xml
-include pcapy.html
-include *.h
-recursive-include win32 *.cc
+include README.rst LICENSE requirements.txt requirements.*.txt
+global-exclude __pycache__

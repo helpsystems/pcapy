@@ -1,0 +1,19 @@
+# Purpose:
+#
+#   This requirements file lists public Python packages that need to be
+#   installed to successfully build the documentation.
+
+#######################
+# Sphinx              #
+#######################
+
+sphinx
+sphinx-readable-theme
+
+#######################
+# Extensions          #
+#######################
+
+autoapi
+plantweb
+pygments-github-lexers

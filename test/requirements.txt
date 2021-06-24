@@ -1,0 +1,25 @@
+# Purpose:
+#
+#   This requirements file list public Python packages that need to be
+#   installed to successfully run tests, debug them or collect metrics from
+#   the run.
+
+#######################
+# Debugging           #
+#######################
+
+ipdb
+pprintpp
+
+#######################
+# Testing             #
+#######################
+
+pytest
+pytest-cov
+
+#######################
+# Assertion           #
+#######################
+
+packaging
