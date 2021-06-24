@@ -35,22 +35,6 @@ PyObject *PcapError;
 // module methods
 
 static PyObject*
-lookupdev(PyObject* self, PyObject* args)
-{
-  char errbuff[PCAP_ERRBUF_SIZE];
-  char* dev;
-
-  dev = pcap_lookupdev(errbuff);
-  if(!dev)
-    {
-      PyErr_SetString(PcapError, errbuff);
-      return NULL;
-    }
-
-  return Py_BuildValue("u", dev);
-}
-
-static PyObject*
 findalldevs(PyObject *self, PyObject *args)
 {
   char errbuff[PCAP_ERRBUF_SIZE];
@@ -244,7 +228,6 @@ bpf_compile(PyObject* self, PyObject* args)
 static PyMethodDef pcap_methods[] = {
   {"open_live", open_live, METH_VARARGS, "open_live(device, snaplen, promisc, to_ms) opens a pcap device"},
   {"open_offline", open_offline, METH_VARARGS, "open_offline(filename) opens a pcap formated file"},
-  {"lookupdev", lookupdev, METH_VARARGS, "lookupdev() looks up a pcap device"},
   {"findalldevs", findalldevs, METH_VARARGS, "findalldevs() lists all available interfaces"},
   {"compile", bpf_compile, METH_VARARGS, "compile(linktype, snaplen, filter, optimize, netmask) creates a bpfprogram object"},
   {"create", pcap_create, METH_VARARGS, "create(device) is used to create a packet capture handle to look at packets on the network."},
@@ -275,7 +258,7 @@ static char *pcap_doc =
 
 #if PY_MAJOR_VERSION >= 3
 PyMODINIT_FUNC
-PyInit_pcapy(void)
+PyInit__pcapyplus(void)
 #else
 void
 initpcapy(void)

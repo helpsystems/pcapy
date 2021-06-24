@@ -18,7 +18,7 @@ In order to support this project the following features were dropped:
 Documentation
 =============
 
-    https://github.com/HPENetworking/pcapypluspcapyplus
+    https://github.com/HPENetworking/pcapyplus
 
 
 Install

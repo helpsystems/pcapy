@@ -19,6 +19,21 @@
 pcapyplus module entry point.
 """
 
+from ._pcapyplus import findalldevs
+
 __author__ = 'Hewlett Packard Enterprise Development LP'
 __email__ = 'sdk_tools_frameworks@groups.ext.hpe.com'
 __version__ = '0.1.0'
+
+
+def lookupdev():
+    """
+    Compatibility function, as the original libpcap function was deprecated.
+
+    Notes from libpcap:
+
+        We're deprecating pcap_lookupdev() for various reasons (not
+        thread-safe, can behave weirdly with WinPcap).
+        Callers should use pcap_findalldevs() and use the first device.
+    """
+    return findalldevs()[0]

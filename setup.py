@@ -23,12 +23,11 @@ Usage:
 
     ./setup.py sdist
     ./setup.py bdist_wheel
-    ./setup.py bdist_wheel --use-cython
 """
 
 from pathlib import Path
 
-from setuptools import setup
+from setuptools import setup, find_packages, Extension
 
 
 def check_directory():
@@ -233,63 +232,6 @@ def find_data(package_path, data_path, **kwargs):
     return data_files
 
 
-def find_packages(lib_directory):
-    """
-    Determine packaging options depending on the packaging mode and flags.
-
-    Supports:
-
-    - Source distribution.
-    - Pure Python wheels.
-    - Cythonized binary wheels.
-
-    ::
-
-        setup(
-            ...
-            **find_packages('lib')
-        )
-
-    :param str lib_directory: Path to the location of the packages.
-
-    :return: A dictionary with options for the setup() call depending on
-     calling parameters.
-    :rtype: dict
-    """
-    from sys import argv
-
-    from setuptools import find_packages as find_source_packages
-
-    packaging = {
-        'package_dir': {'': lib_directory},
-        'packages': find_source_packages(lib_directory),
-    }
-
-    print('Packages found (under {}):'.format(lib_directory))
-    for package in sorted(packaging['packages']):
-        print('  {}'.format(package))
-    print('--')
-
-    if 'bdist_wheel' in argv and '--use-cython' in argv:
-
-        argv.remove('--use-cython')
-
-        from Cython.Build import cythonize
-
-        packaging.update({
-            'ext_modules': cythonize(
-                str(Path(lib_directory, '**/*.pyx'))
-            ),
-        })
-
-        print('Extension modules found:')
-        for ext_module in packaging['ext_modules']:
-            print('  {}'.format(ext_module.name))
-        print('--')
-
-    return packaging
-
-
 setup(
     name='pcapyplus',
     version=find_version('lib/pcapyplus/__init__.py'),
@@ -299,11 +241,22 @@ setup(
     extras_require={
     },
 
+    # Package
+    package_dir={'': 'lib'},
+    packages=find_packages('lib'),
+    ext_modules=[
+        Extension(
+            name='pcapyplus._pcapyplus',
+            sources=find_files('lib', include=('*.cpp', )),
+            include_dirs=['lib/pcapyplus/include'],
+            libraries=['pcap'],
+        )
+    ],
+
     # Data files
     package_data={
         'pcapyplus': (
-            find_data('lib/pcapyplus', 'data') +
-            find_data('lib/pcapyplus', '', include=('*.pyx', ))
+            find_data('lib/pcapyplus', 'data')
         )
     },
 
@@ -314,7 +267,7 @@ setup(
         'Python extension module to access libpcap'
     ),
     long_description=read('README.rst'),
-    url='https://github.com/HPENetworking/pcapypluspcapyplus',
+    url='https://github.com/HPENetworking/pcapyplus',
     keywords='pcapyplus',
 
     classifiers=[
@@ -338,7 +291,4 @@ setup(
 
     # Minimal Python version
     python_requires='>=3.8',
-
-    # Multiple packaging options
-    **find_packages('lib')
 )
