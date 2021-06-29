@@ -58,19 +58,14 @@ static PyMethodDef p_methods[] = {
 static PyObject*
 pcap_getattr(pcapdumper* pp, char* name)
 {
-#if PY_MAJOR_VERSION >= 3
   PyObject *nameobj = PyUnicode_FromString(name);
   PyObject *attr = PyObject_GenericGetAttr((PyObject *)pp, nameobj);
   Py_DECREF(nameobj);
   return attr;
-#else
-  return Py_FindMethod(p_methods, (PyObject*)pp, name);
-#endif
 }
 
 
 PyTypeObject Pdumpertype = {
-#if PY_MAJOR_VERSION >= 3
 	PyVarObject_HEAD_INIT(&PyType_Type, 0)
   "Dumper",                  /* tp_name */
   sizeof(pcapdumper),        /* tp_basicsize */
@@ -109,23 +104,6 @@ PyTypeObject Pdumpertype = {
   0,                         /* tp_init */
   0,                         /* tp_alloc */
   0,                         /* tp_new */
-#else
-  PyObject_HEAD_INIT(NULL)
-  0,
-  "Dumper",
-  sizeof(pcapdumper),
-  0,
-  /* methods */
-  (destructor)pcap_dealloc,  /* tp_dealloc */
-  0,                         /* tp_print */
-  (getattrfunc)pcap_getattr, /* tp_getattr */
-  0,                         /* tp_setattr */
-  0,                         /* tp_compare */
-  0,                         /* tp_repr */
-  0,                         /* tp_as_number */
-  0,                         /* tp_as_sequence */
-  0,                         /* tp_as_mapping */
-#endif
 };
 
 PyObject*
@@ -156,15 +134,9 @@ p_dump(register pcapdumper* pp, PyObject* args)
         return NULL;  
     }
 
-#if PY_MAJOR_VERSION >= 3
 	if (!PyArg_ParseTuple(args,"Oy#",&pyhdr,&data,&len)){
 		return NULL;
     }
-#else
-    if (!PyArg_ParseTuple(args,"Os#",&pyhdr,&data,&len)){
-        return NULL;
-    }
-#endif
 
 	struct pcap_pkthdr hdr;
 	if (-1 == pkthdr_to_native(pyhdr, &hdr))
@@ -187,7 +159,7 @@ static PyObject*
 p_close(register pcapdumper* pp, PyObject* args)
 {
     if(validate_pcapdumper(pp) == false){
-        return NULL;  
+        return NULL;
     }
 
     if ( pp->dumper )

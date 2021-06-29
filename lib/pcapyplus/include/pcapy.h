@@ -22,17 +22,7 @@
 #endif
 
 extern "C" {
-#ifdef WIN32
-__declspec(dllexport)
-char *get_windows_interface_friendly_name(const char *interface_devicename);
-static char* luid_to_guid(char *luid);
-#endif
-
-#if PY_MAJOR_VERSION >= 3
 PyObject * PyInit__pcapyplus(void);
-#else
-void initpcapy(void);
-#endif
 }
 
 // exception object

@@ -23,11 +23,7 @@
 #include "pcapdumper.h"
 #include "pcap_pkthdr.h"
 
-#ifdef WIN32
-#include <winsock2.h>
-#else
 #include <netinet/in.h>
-#endif
 
 
 // internal pcapobject
@@ -112,29 +108,22 @@ static PyMethodDef p_methods[] = {
   {"activate", (PyCFunction)p_activate, METH_NOARGS, "activate a capture handle created using create()"},
   {"__enter__", (PyCFunction) p__enter__, METH_NOARGS, NULL},
   {"__exit__", (PyCFunction) p_close, METH_VARARGS, NULL},
-#ifndef WIN32
   {"getfd", (PyCFunction) p_getfd, METH_VARARGS, "get selectable pcap fd"},
   {"set_rfmon", (PyCFunction)p_set_rfmon, METH_VARARGS, "set monitor mode for a not-yet-activated capture handle"}, /* Available on Npcap, not on Winpcap. */
-#endif
   {NULL, NULL}	/* sentinel */
 };
 
 static PyObject*
 pcap_getattr(pcapobject* pp, char* name)
 {
-#if PY_MAJOR_VERSION >= 3
   PyObject *nameobj = PyUnicode_FromString(name);
   PyObject *attr = PyObject_GenericGetAttr((PyObject *)pp, nameobj);
   Py_DECREF(nameobj);
   return attr;
-#else
-  return Py_FindMethod(p_methods, (PyObject*)pp, name);
-#endif
 }
 
 
 PyTypeObject Pcaptype = {
-#if PY_MAJOR_VERSION >= 3
   PyVarObject_HEAD_INIT(&PyType_Type, 0)
   "Reader",                  /* tp_name */
   sizeof(pcapobject),        /* tp_basicsize */
@@ -173,48 +162,6 @@ PyTypeObject Pcaptype = {
   0,                         /* tp_init */
   0,                         /* tp_alloc */
   0,                         /* tp_new */
-#else
-  PyObject_HEAD_INIT(NULL)
-  0,
-  "Reader",
-  sizeof(pcapobject),
-  0,
-  /* methods */
-  (destructor)pcap_dealloc,    /* tp_dealloc*/
-  0,                           /* tp_print*/
-  (getattrfunc)pcap_getattr,   /* tp_getattr*/
-  0,                           /* tp_setattr*/
-  0,                           /* tp_compare*/
-  0,                           /* tp_repr*/
-  0,                           /* tp_as_number*/
-  0,                           /* tp_as_sequence*/
-  0,                           /* tp_as_mapping*/
-  0,                           /* tp_hash */
-  0,                           /* tp_call */
-  0,                           /* tp_str */
-  0,                           /* tp_getattro */
-  0,                           /* tp_setattro */
-  0,                           /* tp_as_buffer */
-  Py_TPFLAGS_DEFAULT,          /* tp_flags */
-  NULL,                        /* tp_doc */
-  0,                           /* tp_traverse */
-  0,                           /* tp_clear */
-  0,                           /* tp_richcompare */
-  0,                           /* tp_weaklistoffset */
-  0,                           /* tp_iter */
-  0,                           /* tp_iternext */
-  p_methods,                   /* tp_methods */
-  0,                           /* tp_members */
-  0,                           /* tp_getset */
-  0,                           /* tp_base */
-  0,                           /* tp_dict */
-  0,                           /* tp_descr_get */
-  0,                           /* tp_descr_set */
-  0,                           /* tp_dictoffset */
-  0,                           /* tp_init */
-  0,                           /* tp_alloc */
-  0,                           /* tp_new */
-#endif
 };
 
 
@@ -362,12 +309,8 @@ p_next(register pcapobject* pp, PyObject*)
   {
     PyObject *ret = NULL;
 
-    #if PY_MAJOR_VERSION >= 3
       /* return bytes */
       ret = Py_BuildValue("(Oy#)", pkthdr, buf, _caplen);
-    #else
-      ret = Py_BuildValue("(Os#)", pkthdr, buf, _caplen);
-    #endif
 
     Py_DECREF(pkthdr);
     return ret;
@@ -410,12 +353,8 @@ PythonCallBack(u_char *user,
 
   PyObject *hdr = new_pcap_pkthdr(header);
 
-#if PY_MAJOR_VERSION >= 3
   /* pass bytes */
   arglist = Py_BuildValue("Oy#", hdr, packetdata, *len);
-#else
-  arglist = Py_BuildValue("Os#", hdr, packetdata, *len);
-#endif
 
   result = PyEval_CallObject(pctx->pyfunc,arglist);
 
@@ -788,16 +727,10 @@ p_sendpacket(register pcapobject* pp, PyObject* args)
   if (!pp->pcap)
     return err_closed();
 
-#if PY_MAJOR_VERSION >= 3
   /* accept bytes */
   if (!PyArg_ParseTuple(args,"y#", &str, &length)) {
     return NULL;
   }
-#else
-  if (!PyArg_ParseTuple(args,"s#", &str, &length)) {
-    return NULL;
-  }
-#endif
 
 
   status = pcap_sendpacket(pp->pcap, str, length);
@@ -811,7 +744,6 @@ p_sendpacket(register pcapobject* pp, PyObject* args)
   return Py_None;
 }
 
-#ifndef WIN32
 static PyObject*
 p_getfd(register pcapobject* pp, PyObject* args)
 {
@@ -827,4 +759,3 @@ p_getfd(register pcapobject* pp, PyObject* args)
   int fd = pcap_get_selectable_fd(pp->pcap);
   return Py_BuildValue("i", fd);
 }
-#endif
