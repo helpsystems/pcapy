@@ -409,7 +409,7 @@ PythonCallBack(u_char *user,
   arglist = Py_BuildValue("Os#", hdr, packetdata, *len);
 #endif
 
-  result = PyEval_CallObject(pctx->pyfunc,arglist);
+  result = PyObject_CallObject(pctx->pyfunc,arglist);
 
   Py_XDECREF(arglist);
   if (result)
